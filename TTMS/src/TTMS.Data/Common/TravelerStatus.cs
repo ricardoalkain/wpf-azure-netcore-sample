@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace TTMS.Data.Common
 {
     public enum TravelerStatus
     {
+        [Description("")]
+        None,
         /// <summary>
         /// Traveler is no longer authorized to use the system
         /// </summary>

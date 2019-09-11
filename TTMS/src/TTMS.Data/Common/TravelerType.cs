@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace TTMS.Data.Common
 {
@@ -9,6 +7,8 @@ namespace TTMS.Data.Common
     /// </summary>
     public enum TravelerType
     {
+        [Description("")]
+        None,
         /// <summary>
         /// Traveler is only allowed to see and document facts.
         /// </summary>

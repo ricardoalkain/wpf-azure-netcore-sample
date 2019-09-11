@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TTMS.Data.Common;
 
 namespace TTMS.Data.Models

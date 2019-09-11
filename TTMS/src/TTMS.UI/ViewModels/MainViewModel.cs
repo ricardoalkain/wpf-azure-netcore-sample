@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -67,7 +66,7 @@ namespace TTMS.UI.ViewModels
             }
         }
 
-        public async void RefreshData()
+        public void RefreshData()
         {
             var currentItemId = SelectedTraveler?.Id ?? default; // Tries to keep selection after refreshing
             RefreshData(currentItemId);
@@ -75,14 +74,17 @@ namespace TTMS.UI.ViewModels
 
         public async void RefreshData(Guid id)
         {
-            TravelersList = await travelerService.GetAllAsync();
+            var list = (await travelerService.GetAllAsync()).OrderBy(t => t.Name).ToList();
 
-            SelectedTraveler = TravelersList.FirstOrDefault(t => t.Id.Equals(id));
+            var traveler = list.FirstOrDefault(t => t.Id.Equals(id));
 
-            if (SelectedTraveler == null)
+            if (traveler == null)
             {
-                SelectedTraveler = TravelersList.FirstOrDefault();
+                traveler = list.FirstOrDefault();
             }
+
+            SelectedTraveler = traveler;
+            TravelersList = list;
         }
 
         private void EditTraveler()

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using TTMS.Data.Common;
 using TTMS.Data.Models;
@@ -193,7 +192,7 @@ namespace TTMS.UI.ViewModels
 
         private async Task LoadData(Guid id)
         {
-            var traveler = await travelerService.GetByIdAsync(id);
+            var traveler = await travelerService.GetByIdAsync(id).ConfigureAwait(false);
 
             this.Id = traveler?.Id ?? id;
             this.Name = traveler?.Name;
@@ -203,12 +202,12 @@ namespace TTMS.UI.ViewModels
             this.BirthDate = traveler?.BirthDate ?? default;
             this.BirthTimelineId = traveler?.BirthTimelineId ?? 1;
             this.BirthLocation = traveler?.BirthLocation;
-            this.LastDateTime = traveler?.LastDateTime ?? DateTime.Now;
+            this.LastDateTime = traveler?.LastDateTime ?? default;
             this.LastTimelineId = traveler?.LastTimelineId ?? 1;
             this.LastLocation = traveler?.LastLocation;
             this.TravelerType = traveler?.TravelerType ?? default;
-            this.Status = traveler?.Status ?? TravelerStatus.Active;
-            this.TimeMachineModel = traveler?.TimeMachineModel ?? TimeMachineModel.Unknown;
+            this.Status = traveler?.Status ?? default;
+            this.TimeMachineModel = traveler?.TimeMachineModel ?? default;
         }
 
         private async void SaveData()
@@ -233,11 +232,11 @@ namespace TTMS.UI.ViewModels
 
             if (traveler.Id == default)
             {
-                await travelerService.CreateAsync(traveler);
+                await travelerService.CreateAsync(traveler).ConfigureAwait(false);
             }
             else
             {
-                await travelerService.UpdateAsync(traveler);
+                await travelerService.UpdateAsync(traveler).ConfigureAwait(false);
             }
 
             IsEditing = false;

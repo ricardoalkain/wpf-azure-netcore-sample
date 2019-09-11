@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace TTMS.Data.Common
 {
     public enum TimeMachineModel
     {
-        [Description("Fixed Time Capsule (Long Range HGW-60)")]
+        [Description("")]
+        None,
+        [Description("Long Range Machine (Sled HGW-95)")]
         Capsule,
-        [Description("Suitcase (1895 Victorian)")]
+        [Description("Suitcase (1891 model)")]
         Suitcase,
-        [Description("Pocket Watch")]
+        [Description("Pocket Watch (Mount Royal model)")]
         Watch,
-        [Description("Vehicle (Modified 1986 DeLorean)")]
+        [Description("1985 DMC-12 DeLorean")]
         DeLorean,
-        [Description("Telephone Booth (2015 Tardis)")]
+        [Description("Telephone Booth (Tardis)")]
         Tardis,
+        [Description("SkyNet's Time Displacement Sphere")]
+        SkyNet,
         [Description("< Unknowm method >")]
         Unknown
     }
