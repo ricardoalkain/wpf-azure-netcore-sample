@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.62
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.UI", "src\TTMS.UI\TTMS.UI.csproj", "{6E13019E-38C9-426D-A4BF-D4C035504EEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.Data", "src\TTMS.Data\TTMS.Data.csproj", "{E0718580-B874-4483-AF1D-270BDC6191F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E13019E-38C9-426D-A4BF-D4C035504EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E13019E-38C9-426D-A4BF-D4C035504EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E13019E-38C9-426D-A4BF-D4C035504EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E13019E-38C9-426D-A4BF-D4C035504EEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0718580-B874-4483-AF1D-270BDC6191F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0718580-B874-4483-AF1D-270BDC6191F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0718580-B874-4483-AF1D-270BDC6191F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0718580-B874-4483-AF1D-270BDC6191F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {38D35A85-7835-4A36-91B3-684D9B4D90C2}
+	EndGlobalSection
+EndGlobal

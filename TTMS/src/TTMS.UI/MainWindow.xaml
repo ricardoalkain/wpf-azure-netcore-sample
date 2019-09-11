@@ -1,0 +1,163 @@
+﻿<Window x:Class="TTMS.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:h="clr-namespace:TTMS.UI.Helpers"
+        xmlns:local="clr-namespace:TTMS.UI"
+        xmlns:vm="clr-namespace:TTMS.UI.ViewModels"
+        mc:Ignorable="d"
+        Title="TTMS v0.1 beta - Time Travel Management System"
+        Width="800"
+        SizeToContent="Height"
+        Style="{StaticResource AppWindow}">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:CallMethodAction TargetObject="{Binding}" MethodName="RefreshData" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:EditViewModel}">
+            <local:EditWindow/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="MenuBar"
+                    Style="{StaticResource MenuBar}"
+                    IsEnabled="{Binding IsEnabled}"
+                    Grid.Row="0" Grid.ColumnSpan="2">
+            <Button x:Name="btNew"
+                    Content="New"
+                    ToolTip="Create a new traveler"
+                    Command="{Binding NewTravelerCmd}"/>
+            <Button x:Name="btEdit"
+                    Content="Edit"
+                    ToolTip="Edit selected traveler"
+                    Command="{Binding EditTravelerCmd}"/>
+            <Button x:Name="btDel"
+                    Content="Delete"
+                    ToolTip="Remove selected traveler"/>
+            <Label>|</Label>
+            <Button x:Name="btExit"
+                    Content="Close"
+                    Click="CloseWindowCommand"
+                    ToolTip="Closes application"/>
+        </StackPanel>
+
+        <ListBox x:Name="listTravelers"
+                 ItemsSource="{Binding TravelersList}"
+                 SelectedItem="{Binding SelectedTraveler}"
+                 IsEnabled="{Binding IsEnabled}"
+                 Margin="4,2"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 Grid.Row="1">
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <DataTemplate.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="4,0,8,4"/>
+                        </Style>
+                        <Style x:Key="Cap" TargetType="Run">
+                            <Setter Property="FontSize" Value="9"/>
+                            <Setter Property="Foreground" Value="Gray"/>
+                        </Style>
+                        <Style x:Key="Val" TargetType="Run">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="MIA">
+                                    <Setter Property="Foreground" Value="Gray"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataTemplate.Resources>
+
+                    <DockPanel Margin="2">
+                        <Image Source="{Binding Picture}" Height="32" Width="32" Stretch="UniformToFill" VerticalAlignment="Top"/>
+                        <WrapPanel>
+                            <TextBlock Width="120">
+                                <Run Style="{StaticResource Cap}" Text="Name"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Name}"/>
+                            </TextBlock>
+                            <TextBlock Width="64">
+                                <Run Style="{StaticResource Cap}" Text="Alias"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Alias}"/>
+                            </TextBlock>
+                            <TextBlock Width="50">
+                                <Run Style="{StaticResource Cap}" Text="Type"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=TravelerType, Converter={h:EnumToStringConverter}}"/>
+                            </TextBlock>
+                            <TextBlock Width="40">
+                                <Run Style="{StaticResource Cap}" Text="Status"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Status, Converter={h:EnumToStringConverter}}"/>
+                            </TextBlock>
+                            <!--<TextBlock Width="75">
+                                <Run Style="{StaticResource Cap}" Text="TM Model"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=TimeMachineModel}"/>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Style="{StaticResource Cap}" Text="Born in"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}">
+                                    <Run.Text>
+                                        <MultiBinding StringFormat="{}{0}.{1:yyyyMMdd} @{2}">
+                                            <Binding Path="BirthTimelineId"/>
+                                            <Binding Path="BirthDate"/>
+                                            <Binding Path="BirthLocation"/>
+                                        </MultiBinding>
+                                    </Run.Text>
+                                </Run>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Style="{StaticResource Cap}" Text="Last Known Position"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}">
+                                    <Run.Text>
+                                        <MultiBinding StringFormat="{}{0}.{1:yyyyMMdd.HHmmss} @{2}">
+                                            <Binding Path="LastTimelineId"/>
+                                            <Binding Path="LastDateTime"/>
+                                            <Binding Path="LastLocation"/>
+                                        </MultiBinding>
+                                    </Run.Text>
+                                </Run>
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Style="{StaticResource Cap}" Text="Skills"/>
+                                <LineBreak/>
+                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Skills}"/>
+                            </TextBlock>-->
+                        </WrapPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ContentControl x:Name="ccDetails"
+            Grid.Column="1"
+            Grid.Row="1"
+            Content="{Binding DetailsViewModel}"
+            />
+    </Grid>
+</Window>
