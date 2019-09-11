@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TTMS.UI.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DataSource" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data\data.json</Value>
+    </Setting>
+    <Setting Name="ImageSource" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data\Pictures</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
