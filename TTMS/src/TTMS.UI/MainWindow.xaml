@@ -112,42 +112,6 @@
                                 <LineBreak/>
                                 <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Status, Converter={h:EnumToStringConverter}}"/>
                             </TextBlock>
-                            <!--<TextBlock Width="75">
-                                <Run Style="{StaticResource Cap}" Text="TM Model"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=TimeMachineModel}"/>
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Style="{StaticResource Cap}" Text="Born in"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}">
-                                    <Run.Text>
-                                        <MultiBinding StringFormat="{}{0}.{1:yyyyMMdd} @{2}">
-                                            <Binding Path="BirthTimelineId"/>
-                                            <Binding Path="BirthDate"/>
-                                            <Binding Path="BirthLocation"/>
-                                        </MultiBinding>
-                                    </Run.Text>
-                                </Run>
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Style="{StaticResource Cap}" Text="Last Known Position"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}">
-                                    <Run.Text>
-                                        <MultiBinding StringFormat="{}{0}.{1:yyyyMMdd.HHmmss} @{2}">
-                                            <Binding Path="LastTimelineId"/>
-                                            <Binding Path="LastDateTime"/>
-                                            <Binding Path="LastLocation"/>
-                                        </MultiBinding>
-                                    </Run.Text>
-                                </Run>
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Style="{StaticResource Cap}" Text="Skills"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Skills}"/>
-                            </TextBlock>-->
                         </WrapPanel>
                     </DockPanel>
                 </DataTemplate>
