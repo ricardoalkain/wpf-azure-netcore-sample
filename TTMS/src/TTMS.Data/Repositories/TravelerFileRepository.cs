@@ -8,7 +8,7 @@ using TTMS.Data.Entities;
 
 namespace TTMS.Data.Repositories
 {
-    public class TravelerFileRepository : IFileRepository
+    public class TravelerFileRepository : ITravelerRepository
     {
         private readonly string fileName;
 

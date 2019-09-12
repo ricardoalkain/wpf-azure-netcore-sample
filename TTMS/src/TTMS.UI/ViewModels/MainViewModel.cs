@@ -16,7 +16,6 @@ namespace TTMS.UI.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private readonly ITravelerService travelerService;
-        private readonly IFileRepository fileData;
         private Traveler selectedTraveler;
         private IEnumerable<Traveler> travelersList;
         private EditViewModel editView;
@@ -28,7 +27,6 @@ namespace TTMS.UI.ViewModels
         public MainViewModel()
         {
             travelerService = DependencyManager.Container.Resolve<ITravelerService>();
-            fileData = DependencyManager.Container.Resolve<IFileRepository>();
             editView = DependencyManager.Container.Resolve<EditViewModel>();
 
             NewTravelerCmd = new RelayCommand(NewTraveler);
