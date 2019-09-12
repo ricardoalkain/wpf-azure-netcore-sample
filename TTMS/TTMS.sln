@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.UI", "src\TTMS.UI\TTMS.UI.csproj", "{6E13019E-38C9-426D-A4BF-D4C035504EEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.Data", "src\TTMS.Data\TTMS.Data.csproj", "{E0718580-B874-4483-AF1D-270BDC6191F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTMS.Data", "src\TTMS.Data\TTMS.Data.csproj", "{E0718580-B874-4483-AF1D-270BDC6191F9}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TTMS.DB.SQL", "src\TTMS.DB.SQL\TTMS.DB.SQL.sqlproj", "{4713C683-A3A0-4243-A38B-C7C741E5CE8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,12 @@ Global
 		{E0718580-B874-4483-AF1D-270BDC6191F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0718580-B874-4483-AF1D-270BDC6191F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0718580-B874-4483-AF1D-270BDC6191F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4713C683-A3A0-4243-A38B-C7C741E5CE8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4713C683-A3A0-4243-A38B-C7C741E5CE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4713C683-A3A0-4243-A38B-C7C741E5CE8E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4713C683-A3A0-4243-A38B-C7C741E5CE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4713C683-A3A0-4243-A38B-C7C741E5CE8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4713C683-A3A0-4243-A38B-C7C741E5CE8E}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

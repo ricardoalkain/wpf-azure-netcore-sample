@@ -5,8 +5,11 @@ using System.Linq;
 using System.Windows;
 using TTMS.Data.Models;
 using TTMS.Data.Services;
+using TTMS.Data.Repositories;
 using TTMS.UI.Helpers;
 using Unity;
+using System.Threading.Tasks;
+using TTMS.Data.Extensions;
 
 namespace TTMS.UI.ViewModels
 {
@@ -30,12 +33,6 @@ namespace TTMS.UI.ViewModels
             EditTravelerCmd = new RelayCommand(EditTraveler);
             editView.OnCancel += EditCancelled;
             editView.OnSave += EditCommitted;
-
-            // Work around bug in WPF where SizeToContent somehow disable Interation.EventTriggers
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                RefreshData();
-            }
         }
 
         public EditViewModel DetailsViewModel
@@ -74,7 +71,7 @@ namespace TTMS.UI.ViewModels
 
         public async void RefreshData(Guid id)
         {
-            var list = (await travelerService.GetAllAsync()).OrderBy(t => t.Name).ToList();
+            var list = (await travelerService.GetAllAsync()).OrderByDescending(t => t.Type).ToList();
 
             var traveler = list.FirstOrDefault(t => t.Id.Equals(id));
 
