@@ -25,19 +25,21 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\data.json")]
-        public string DataSource {
+        [global::System.Configuration.DefaultSettingValueAttribute("DataFiles\\data.json")]
+        public string DataFile {
             get {
-                return ((string)(this["DataSource"]));
+                return ((string)(this["DataFile"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\Pictures")]
-        public string ImageSource {
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDb)\\MSSQLLocalDB; Initial Catalog=TTMS;Integrated Security=True" +
+            ";")]
+        public string DBConnectionStr {
             get {
-                return ((string)(this["ImageSource"]));
+                return ((string)(this["DBConnectionStr"]));
             }
         }
     }

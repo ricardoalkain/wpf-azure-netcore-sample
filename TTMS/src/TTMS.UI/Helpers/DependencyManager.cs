@@ -9,7 +9,9 @@ namespace TTMS.UI.Helpers
         static DependencyManager()
         {
             Container = new UnityContainer();
-            Container.RegisterInstance<ITravelerRepository>(new TravelerFileRepository(Properties.Settings.Default.DataSource));
+            Container.RegisterInstance<IFileRepository>(new TravelerFileRepository(Properties.Settings.Default.DataFile));
+
+            Container.RegisterInstance<ITravelerRepository>(new TravelerSqlRepository(Properties.Settings.Default.DBConnectionStr));
             Container.RegisterSingleton<ITravelerService, TravelerService>();
         }
 

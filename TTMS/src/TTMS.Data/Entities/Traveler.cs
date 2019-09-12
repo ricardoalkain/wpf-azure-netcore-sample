@@ -11,8 +11,6 @@ namespace TTMS.Data.Entities
 
         public string Skills { get; set; }
 
-        public string PictureUri { get; set; }
-
         public byte[] Picture { get; set; }
 
         public DateTime BirthDate { get; set; }
@@ -27,10 +25,10 @@ namespace TTMS.Data.Entities
 
         public string LastLocation { get; set; }
 
-        public TravelerType TravelerType { get; set; }
+        public TravelerType Type { get; set; }
 
         public TravelerStatus Status { get; set; }
 
-        public TimeMachineModel TimeMachineModel { get; set; }
+        public DeviceModel DeviceModel { get; set; }
     }
 }

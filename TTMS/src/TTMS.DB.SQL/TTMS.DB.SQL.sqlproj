@@ -64,9 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Traveler.sql" />
-    <Build Include="Stored Procedures\spu_GetAllTravelers.sql" />
-    <Build Include="Stored Procedures\spu_AddTraveler.sql" />
     <Build Include="Stored Procedures\spu_GetTraveler.sql" />
-    <Build Include="Stored Procedures\spu_UpdateTraveler.sql" />
+    <Build Include="Stored Procedures\spu_AddOrUpdateTraveler.sql" />
+    <Build Include="Stored Procedures\spu_GetAllTravelers.sql" />
+    <Build Include="Stored Procedures\spu_DeleteTraveler.sql" />
   </ItemGroup>
 </Project>

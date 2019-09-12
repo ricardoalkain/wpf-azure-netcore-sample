@@ -21,11 +21,10 @@ namespace TTMS.Data.Extensions
                 LastTimelineId = model.LastTimelineId,
                 LastLocation = model.LastLocation,
                 Picture = model.Picture,
-                PictureUri = model.PictureUri,
                 Skills = model.Skills,
                 Status = model.Status,
-                TimeMachineModel = model.TimeMachineModel,
-                TravelerType = model.TravelerType
+                DeviceModel = model.DeviceModel,
+                Type = model.Type
             };
         }
 
@@ -52,11 +51,10 @@ namespace TTMS.Data.Extensions
                 LastTimelineId = entity.LastTimelineId,
                 LastLocation = entity.LastLocation,
                 Picture = entity.Picture,
-                PictureUri = entity.PictureUri,
                 Skills = entity.Skills,
                 Status = entity.Status,
-                TimeMachineModel = entity.TimeMachineModel,
-                TravelerType = entity.TravelerType
+                DeviceModel = entity.DeviceModel,
+                Type = entity.Type
             };
         }
 

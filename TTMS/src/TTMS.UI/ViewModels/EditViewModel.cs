@@ -120,11 +120,11 @@ namespace TTMS.UI.ViewModels
             set => SetProperty(ref lastlocation, value);
         }
 
-        private TravelerType travelertype;
-        public TravelerType TravelerType
+        private TravelerType type;
+        public TravelerType Type
         {
-            get => travelertype;
-            set => SetProperty(ref travelertype, value);
+            get => type;
+            set => SetProperty(ref type, value);
         }
 
         private TravelerStatus status;
@@ -134,11 +134,11 @@ namespace TTMS.UI.ViewModels
             set => SetProperty(ref status, value);
         }
 
-        private TimeMachineModel timemachinemodel;
-        public TimeMachineModel TimeMachineModel
+        private DeviceModel deviceModel;
+        public DeviceModel DeviceModel
         {
-            get => timemachinemodel;
-            set => SetProperty(ref timemachinemodel, value);
+            get => deviceModel;
+            set => SetProperty(ref deviceModel, value);
         }
 
         #endregion
@@ -161,9 +161,9 @@ namespace TTMS.UI.ViewModels
             this.LastDateTime = DateTime.Now;
             this.LastTimelineId = 1;
             this.LastLocation = default;
-            this.TravelerType = default;
+            this.Type = default;
             this.Status = TravelerStatus.Active;
-            this.TimeMachineModel = TimeMachineModel.Unknown;
+            this.DeviceModel = DeviceModel.Unknown;
 
             IsEditing = true;
         }
@@ -205,9 +205,9 @@ namespace TTMS.UI.ViewModels
             this.LastDateTime = traveler?.LastDateTime ?? default;
             this.LastTimelineId = traveler?.LastTimelineId ?? 1;
             this.LastLocation = traveler?.LastLocation;
-            this.TravelerType = traveler?.TravelerType ?? default;
+            this.Type = traveler?.Type ?? default;
             this.Status = traveler?.Status ?? default;
-            this.TimeMachineModel = traveler?.TimeMachineModel ?? default;
+            this.DeviceModel = traveler?.DeviceModel ?? default;
         }
 
         private async void SaveData()
@@ -225,9 +225,9 @@ namespace TTMS.UI.ViewModels
                 LastDateTime = this.LastDateTime,
                 LastTimelineId = this.LastTimelineId,
                 LastLocation = this.LastLocation,
-                TravelerType = this.TravelerType,
+                Type = this.Type,
                 Status = this.Status,
-                TimeMachineModel = this.TimeMachineModel
+                DeviceModel = this.DeviceModel
             };
 
             if (traveler.Id == default)
