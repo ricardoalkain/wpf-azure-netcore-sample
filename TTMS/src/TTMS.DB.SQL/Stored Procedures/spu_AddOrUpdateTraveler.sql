@@ -1,18 +1,18 @@
 ﻿CREATE PROCEDURE dbo.spu_AddOrUpdateTraveler
-    @id             UNIQUEIDENTIFIER,
+    @id             UNIQUEIDENTIFIER = NULL,
     @type           INT,
     @name           NVARCHAR(100),
     @status         INT,
     @alias          NVARCHAR(20),
-    @picture        VARBINARY(MAX),
-    @birthDate      DATETIME2,
+    @picture        VARBINARY(MAX)  = NULL,
+    @birthDate      DATETIME2       = NULL,
     @birthTimeline  INT,
-    @birthLocation  NVARCHAR(50),
-    @lastDateTime   DATETIME2,
+    @birthLocation  NVARCHAR(50)    = NULL,
+    @lastDateTime   DATETIME2       = NULL,
     @lastTimeline   INT,
-    @lastLocation   NVARCHAR(50),
-    @deviceModel        INT,
-    @skills         NVARCHAR(4000)
+    @lastLocation   NVARCHAR(50)    = NULL,
+    @deviceModel    INT,
+    @skills         NVARCHAR(4000)  = NULL
 AS
 BEGIN
     SET @id = ISNULL(@id, NEWID());

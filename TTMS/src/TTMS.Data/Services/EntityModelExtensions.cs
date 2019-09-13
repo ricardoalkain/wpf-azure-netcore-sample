@@ -34,6 +34,30 @@ namespace TTMS.Data.Services
             return travelers.Select(t => t.ToEntity());
         }
 
+        /// <summary>
+        /// Copy the properties of an <see cref="Entities.Traveler"/> entity to the model without
+        /// creating a new instance (thus keeping the original reference).
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="entity"></param>
+        public static void ReadFrom(this Models.Traveler model, Entities.Traveler entity)
+        {
+            model.Id = entity.Id;
+            model.Name = entity.Name;
+            model.Alias = entity.Alias;
+            model.BirthDate = entity.BirthDate;
+            model.BirthTimelineId = entity.BirthTimelineId;
+            model.BirthLocation = entity.BirthLocation;
+            model.LastDateTime = entity.LastDateTime;
+            model.LastTimelineId = entity.LastTimelineId;
+            model.LastLocation = entity.LastLocation;
+            model.Picture = entity.Picture;
+            model.Skills = entity.Skills;
+            model.Status = entity.Status;
+            model.DeviceModel = entity.DeviceModel;
+            model.Type = entity.Type;
+        }
+
         #endregion
 
         #region Entity Extensions

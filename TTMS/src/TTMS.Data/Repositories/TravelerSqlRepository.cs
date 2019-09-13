@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
+using TTMS.Common.Enums;
 using TTMS.Data.Entities;
-using Dapper;
 
 namespace TTMS.Data.Repositories
 {
@@ -18,79 +17,116 @@ namespace TTMS.Data.Repositories
             this.connectionString = connectionstring;
         }
 
-        public async Task DeleteAsync(Guid key)
+        public async Task DeleteAsync(Guid id)
         {
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                var parameters = new DynamicParameters();
-                parameters.Add("id", key);
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = "dbo.spu_DeleteTraveler";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("id", SqlDbType.UniqueIdentifier).Value = id;
 
-                await connection.ExecuteAsync(
-                    sql: "dbo.spu_DeleteTraveler",
-                    commandType: CommandType.StoredProcedure,
-                    param: parameters);
+                await cmd.ExecuteNonQueryAsync();
             }
         }
 
         public async Task<Traveler> GetByIdAsync(Guid id)
         {
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                var parameters = new DynamicParameters();
-                parameters.Add("id", id);
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = "dbo.spu_GetTraveler";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("id", SqlDbType.UniqueIdentifier).Value = id;
 
-                var traveler = (await connection.QueryAsync<Traveler>(
-                    sql: "dbo.spu_GetTraveler",
-                    commandType: CommandType.StoredProcedure,
-                    param: parameters))?.FirstOrDefault();
-
-                return traveler;
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return TravelerFromReader(reader);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                return (await connection.QueryAsync<Traveler>(
-                    sql: "dbo.spu_GetAllTravelers",
-                    commandType: CommandType.StoredProcedure))?.ToList();
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = "dbo.spu_GetAllTravelers";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    var list = new List<Traveler>();
+                    while (await reader.ReadAsync())
+                    {
+                        list.Add(TravelerFromReader(reader));
+                    }
+
+                    return list;
+                }
             }
         }
 
         public async Task InsertOrReplaceAsync(Traveler traveler)
         {
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                var queryParameters = new DynamicParameters();
-                queryParameters.Add("id", traveler.Id);
-                queryParameters.Add("name", traveler.Name);
-                queryParameters.Add("alias", traveler.Alias);
-                queryParameters.Add("type", traveler.Type);
-                queryParameters.Add("status", traveler.Status);
-                queryParameters.Add("deviceModel", traveler.DeviceModel);
-                queryParameters.Add("birthDate", traveler.BirthDate, DbType.DateTime2);
-                queryParameters.Add("birthLocation", traveler.BirthLocation);
-                queryParameters.Add("birthTimeline", traveler.BirthTimelineId);
-                queryParameters.Add("lastDateTime", traveler.LastDateTime, DbType.DateTime2);
-                queryParameters.Add("lastLocation", traveler.LastLocation);
-                queryParameters.Add("lastTimeline", traveler.LastTimelineId);
-                queryParameters.Add("picture", traveler.Picture, DbType.Binary);
-                queryParameters.Add("skills", traveler.Skills);
+                var cmd = connection.CreateCommand();
+                cmd.CommandText = "spu_AddOrUpdateTraveler";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("id", SqlDbType.UniqueIdentifier).Value = traveler.Id;
+                cmd.Parameters.Add("name", SqlDbType.NVarChar).Value = traveler.Name;
+                cmd.Parameters.Add("alias", SqlDbType.NVarChar).Value = traveler.Alias;
+                cmd.Parameters.Add("type", SqlDbType.Int).Value = traveler.Type;
+                cmd.Parameters.Add("status", SqlDbType.Int).Value = traveler.Status;
+                cmd.Parameters.Add("deviceModel", SqlDbType.Int).Value = traveler.DeviceModel;
+                cmd.Parameters.Add("birthDate", SqlDbType.DateTime2).Value = traveler.BirthDate;
+                cmd.Parameters.Add("birthLocation", SqlDbType.NVarChar).Value = traveler.BirthLocation;
+                cmd.Parameters.Add("birthTimeline", SqlDbType.Int).Value = traveler.BirthTimelineId;
+                cmd.Parameters.Add("lastDateTime", SqlDbType.DateTime2).Value = traveler.LastDateTime;
+                cmd.Parameters.Add("lastLocation", SqlDbType.NVarChar).Value = traveler.LastLocation;
+                cmd.Parameters.Add("lastTimeline", SqlDbType.Int).Value = traveler.LastTimelineId;
+                cmd.Parameters.Add("picture", SqlDbType.VarBinary).Value = traveler.Picture;
+                cmd.Parameters.Add("skills", SqlDbType.NVarChar).Value = traveler.Skills;
 
-                await connection.ExecuteAsync(
-                    sql: "dbo.spu_AddOrUpdateTraveler",
-                    commandType: CommandType.StoredProcedure,
-                    param: queryParameters);
+                await cmd.ExecuteNonQueryAsync();
             }
+        }
+
+        private Traveler TravelerFromReader(SqlDataReader reader)
+        {
+            return new Traveler
+            {
+                Id = (reader[nameof(Traveler.Id)] as Guid?) ?? default,
+                Name = (reader[nameof(Traveler.Name)] as string),
+                Alias = (reader[nameof(Traveler.Alias)] as string),
+                BirthDate = (reader[nameof(Traveler.BirthDate)] as DateTime?) ?? default,
+                BirthLocation = (reader[nameof(Traveler.BirthLocation)] as string),
+                BirthTimelineId = (reader[nameof(Traveler.BirthTimelineId)] as int?) ?? default,
+                DeviceModel = (DeviceModel)((reader[nameof(Traveler.DeviceModel)] as int?) ?? default),
+                LastDateTime = (reader[nameof(Traveler.LastDateTime)] as DateTime?) ?? default,
+                LastLocation = (reader[nameof(Traveler.LastLocation)] as string),
+                LastTimelineId = (reader[nameof(Traveler.LastTimelineId)] as int?) ?? default,
+                Picture = (reader[nameof(Traveler.Picture)] as byte[]),
+                Skills = (reader[nameof(Traveler.Skills)] as string),
+                Status = (TravelerStatus)((reader[nameof(Traveler.Status)] as int?) ?? default),
+                Type = (TravelerType)((reader[nameof(Traveler.Type)] as int?) ?? default)
+            };
         }
     }
 }

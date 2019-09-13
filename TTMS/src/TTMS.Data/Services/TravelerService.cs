@@ -19,13 +19,14 @@ namespace TTMS.Data.Services
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
             var entity = traveler.ToEntity();
-            await travelerRepository.InsertOrReplaceAsync(entity);
-            return entity.ToModel();
+            await travelerRepository.InsertOrReplaceAsync(entity).ConfigureAwait(false);
+            traveler.ReadFrom(entity);
+            return traveler;
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            await travelerRepository.DeleteAsync(id);
+            await travelerRepository.DeleteAsync(id).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()
@@ -36,13 +37,13 @@ namespace TTMS.Data.Services
 
         public async Task<Traveler> GetByIdAsync(Guid key)
         {
-            var traveler = await travelerRepository.GetByIdAsync(key);
+            var traveler = await travelerRepository.GetByIdAsync(key).ConfigureAwait(false);
             return traveler?.ToModel();
         }
 
         public async Task UpdateAsync(Traveler traveler)
         {
-            await travelerRepository.InsertOrReplaceAsync(traveler.ToEntity());
+            await travelerRepository.InsertOrReplaceAsync(traveler.ToEntity()).ConfigureAwait(false);
         }
     }
 }
