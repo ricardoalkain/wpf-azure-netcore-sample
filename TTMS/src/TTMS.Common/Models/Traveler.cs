@@ -1,7 +1,7 @@
 ﻿using System;
-using TTMS.Data.Common;
+using TTMS.Common.Enums;
 
-namespace TTMS.Data.Models
+namespace TTMS.Common.Models
 {
     public class Traveler
     {

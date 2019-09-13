@@ -9,21 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DataFiles\data.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="DataFiles\data.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.1.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TTMS.Common\TTMS.Common.csproj" />
   </ItemGroup>
 
 </Project>

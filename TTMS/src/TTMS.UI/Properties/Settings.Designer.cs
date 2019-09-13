@@ -25,12 +25,10 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDb)\\MSSQLLocalDB; Initial Catalog=TTMS;Integrated Security=True" +
-            ";")]
-        public string DBConnectionStr {
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:5000")]
+        public string ApiUrl {
             get {
-                return ((string)(this["DBConnectionStr"]));
+                return ((string)(this["ApiUrl"]));
             }
         }
     }

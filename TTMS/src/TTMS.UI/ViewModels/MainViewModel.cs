@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows;
-using TTMS.Data.Models;
-using TTMS.Data.Services;
-using TTMS.Data.Repositories;
+using TTMS.Common.Abstractions;
+using TTMS.Common.Models;
 using TTMS.UI.Helpers;
 using Unity;
-using System.Threading.Tasks;
-using TTMS.Data.Extensions;
 
 namespace TTMS.UI.ViewModels
 {

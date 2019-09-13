@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using TTMS.Data.Common;
-using TTMS.Data.Models;
-using TTMS.Data.Services;
+using TTMS.Common.Abstractions;
+using TTMS.Common.Enums;
+using TTMS.Common.Models;
 using TTMS.UI.Helpers;
 using Unity;
 

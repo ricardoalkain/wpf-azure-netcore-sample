@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TTMS.Data.Common
+namespace TTMS.Common.Enums
 {
     public enum DeviceModel
     {
