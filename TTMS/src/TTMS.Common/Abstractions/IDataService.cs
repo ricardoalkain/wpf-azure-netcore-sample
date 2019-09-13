@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TTMS.Data.Services
+namespace TTMS.Common.Abstractions
 {
-    public interface IDataService<TKey,TModel>
+    public interface IDataService<TKey, TModel>
     {
         Task<IEnumerable<TModel>> GetAllAsync();
 

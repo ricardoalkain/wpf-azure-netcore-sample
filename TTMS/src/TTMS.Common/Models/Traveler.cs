@@ -1,7 +1,7 @@
 ﻿using System;
-using TTMS.Data.Common;
+using TTMS.Common.Enums;
 
-namespace TTMS.Data.Models
+namespace TTMS.Common.Models
 {
     public class Traveler
     {
@@ -12,8 +12,6 @@ namespace TTMS.Data.Models
         public string Alias { get; set; }
 
         public string Skills { get; set; }
-
-        public string PictureUri { get; set; }
 
         public byte[] Picture { get; set; }
 
@@ -29,10 +27,10 @@ namespace TTMS.Data.Models
 
         public string LastLocation { get; set; }
 
-        public TravelerType TravelerType { get; set; }
+        public TravelerType Type { get; set; }
 
         public TravelerStatus Status { get; set; }
 
-        public TimeMachineModel TimeMachineModel { get; set; }
+        public DeviceModel DeviceModel { get; set; }
     }
 }

@@ -10,7 +10,9 @@
         mc:Ignorable="d"
         Title="TTMS v0.1 beta - Time Travel Management System"
         Width="800"
-        SizeToContent="Height"
+        Height="400"
+        MinWidth="800"
+        MinHeight="400"
         Style="{StaticResource AppWindow}">
 
     <i:Interaction.Triggers>
@@ -85,35 +87,36 @@
                                 <DataTrigger Binding="{Binding Status}" Value="MIA">
                                     <Setter Property="Foreground" Value="Gray"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="KIA">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DataTemplate.Resources>
 
-                    <DockPanel Margin="2">
+                    <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding Picture}" Height="32" Width="32" Stretch="UniformToFill" VerticalAlignment="Top"/>
-                        <WrapPanel>
-                            <TextBlock Width="120">
-                                <Run Style="{StaticResource Cap}" Text="Name"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Name}"/>
-                            </TextBlock>
-                            <TextBlock Width="64">
-                                <Run Style="{StaticResource Cap}" Text="Alias"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Alias}"/>
-                            </TextBlock>
-                            <TextBlock Width="50">
-                                <Run Style="{StaticResource Cap}" Text="Type"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=TravelerType, Converter={h:EnumToStringConverter}}"/>
-                            </TextBlock>
-                            <TextBlock Width="40">
-                                <Run Style="{StaticResource Cap}" Text="Status"/>
-                                <LineBreak/>
-                                <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Status, Converter={h:EnumToStringConverter}}"/>
-                            </TextBlock>
-                        </WrapPanel>
-                    </DockPanel>
+                        <TextBlock Width="120">
+                            <Run Style="{StaticResource Cap}" Text="Name"/>
+                            <LineBreak/>
+                            <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Name}"/>
+                        </TextBlock>
+                        <TextBlock Width="70">
+                            <Run Style="{StaticResource Cap}" Text="Alias"/>
+                            <LineBreak/>
+                            <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Alias}"/>
+                        </TextBlock>
+                        <TextBlock Width="50">
+                            <Run Style="{StaticResource Cap}" Text="Type"/>
+                            <LineBreak/>
+                            <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Type, Converter={h:EnumToStringConverter}}"/>
+                        </TextBlock>
+                        <TextBlock Width="30">
+                            <Run Style="{StaticResource Cap}" Text="Status"/>
+                            <LineBreak/>
+                            <Run Style="{StaticResource Val}" Text="{Binding Mode=OneWay, Path=Status, Converter={h:EnumToStringConverter}}"/>
+                        </TextBlock>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

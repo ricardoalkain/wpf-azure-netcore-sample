@@ -25,19 +25,10 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\data.json")]
-        public string DataSource {
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:5000")]
+        public string ApiUrl {
             get {
-                return ((string)(this["DataSource"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\Pictures")]
-        public string ImageSource {
-            get {
-                return ((string)(this["ImageSource"]));
+                return ((string)(this["ApiUrl"]));
             }
         }
     }

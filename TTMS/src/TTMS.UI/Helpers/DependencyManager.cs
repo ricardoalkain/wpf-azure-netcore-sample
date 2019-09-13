@@ -1,6 +1,7 @@
-﻿using TTMS.Data.Repositories;
-using TTMS.Data.Services;
+﻿using TTMS.Common.Abstractions;
+using TTMS.UI.Services;
 using Unity;
+using Unity.Injection;
 
 namespace TTMS.UI.Helpers
 {
@@ -9,8 +10,13 @@ namespace TTMS.UI.Helpers
         static DependencyManager()
         {
             Container = new UnityContainer();
-            Container.RegisterInstance<ITravelerRepository>(new TravelerFileRepository(Properties.Settings.Default.DataSource));
-            Container.RegisterSingleton<ITravelerService, TravelerService>();
+
+            Container.RegisterType<ITravelerService, TravelerHttpService>(
+                new InjectionConstructor(
+                    Properties.Settings.Default.ApiUrl
+                ));
+
+            //Container.RegisterInstance<ITravelerService>(new TravelerHttpService(Properties.Settings.Default.ApiUrl));
         }
 
         public static IUnityContainer Container { get; }

@@ -45,7 +45,14 @@ namespace TTMS.UI.Helpers
             if (!enumType.IsEnum)
                 throw new ArgumentException($"Paramenter {nameof(enumType)} must be an enum");
 
-            return Enum.GetValues(enumType).Cast<Enum>().Select((e) => new ValueDescription() { Value = e, Description = GetEnumDescription(e) }).ToList();
+            return Enum.GetValues(enumType).Cast<Enum>()
+                .Select((e) => new ValueDescription()
+                {
+                    Value = e,
+                    Description = GetEnumDescription(e)
+                })
+                .OrderBy(v => v.Description)
+                .ToList();
         }
     }
 }

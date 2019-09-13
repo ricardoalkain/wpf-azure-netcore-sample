@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Models = TTMS.Common.Models;
 
-namespace TTMS.Data.Extensions
+namespace TTMS.Data.Services
 {
-    public static class EntityModelExtensions
+    internal static class EntityModelExtensions
     {
         #region Model Extensions
 
         public static Entities.Traveler ToEntity(this Models.Traveler model)
         {
-            return new Entities.Traveler
+            return new Data.Entities.Traveler
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -21,15 +22,14 @@ namespace TTMS.Data.Extensions
                 LastTimelineId = model.LastTimelineId,
                 LastLocation = model.LastLocation,
                 Picture = model.Picture,
-                PictureUri = model.PictureUri,
                 Skills = model.Skills,
                 Status = model.Status,
-                TimeMachineModel = model.TimeMachineModel,
-                TravelerType = model.TravelerType
+                DeviceModel = model.DeviceModel,
+                Type = model.Type
             };
         }
 
-        public static IEnumerable<Entities.Traveler> ToEntity(this IEnumerable<Models.Traveler> travelers)
+        public static IEnumerable<Data.Entities.Traveler> ToEntity(this IEnumerable<Models.Traveler> travelers)
         {
             return travelers.Select(t => t.ToEntity());
         }
@@ -38,7 +38,7 @@ namespace TTMS.Data.Extensions
 
         #region Entity Extensions
 
-        public static Models.Traveler ToModel(this Entities.Traveler entity)
+        public static Models.Traveler ToModel(this Data.Entities.Traveler entity)
         {
             return new Models.Traveler
             {
@@ -52,15 +52,14 @@ namespace TTMS.Data.Extensions
                 LastTimelineId = entity.LastTimelineId,
                 LastLocation = entity.LastLocation,
                 Picture = entity.Picture,
-                PictureUri = entity.PictureUri,
                 Skills = entity.Skills,
                 Status = entity.Status,
-                TimeMachineModel = entity.TimeMachineModel,
-                TravelerType = entity.TravelerType
+                DeviceModel = entity.DeviceModel,
+                Type = entity.Type
             };
         }
 
-        public static IEnumerable<Models.Traveler> ToModel(this IEnumerable<Entities.Traveler> travelers)
+        public static IEnumerable<Models.Traveler> ToModel(this IEnumerable<Data.Entities.Traveler> travelers)
         {
             return travelers.Select(t => t.ToModel()).ToList();
         }

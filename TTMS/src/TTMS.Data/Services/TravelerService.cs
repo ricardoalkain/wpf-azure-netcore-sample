@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TTMS.Data.Extensions;
-using TTMS.Data.Models;
+using TTMS.Common.Abstractions;
+using TTMS.Common.Models;
 using TTMS.Data.Repositories;
 
 namespace TTMS.Data.Services

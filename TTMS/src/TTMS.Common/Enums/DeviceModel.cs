@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel;
 
-namespace TTMS.Data.Common
+namespace TTMS.Common.Enums
 {
-    public enum TimeMachineModel
+    public enum DeviceModel
     {
         [Description("")]
         None,
-        [Description("Long Range Machine (Sled HGW-95)")]
+        [Description("Long Range Device (Time Sled HGW-95)")]
         Capsule,
         [Description("Suitcase (1891 model)")]
         Suitcase,
-        [Description("Pocket Watch (Mount Royal model)")]
+        [Description("Pocket Watch (1963 Mount Royal)")]
         Watch,
         [Description("1985 DMC-12 DeLorean")]
         DeLorean,
@@ -18,7 +18,9 @@ namespace TTMS.Data.Common
         Tardis,
         [Description("SkyNet's Time Displacement Sphere")]
         SkyNet,
-        [Description("< Unknowm method >")]
-        Unknown
+        [Description("<< Unknowm method >>")]
+        Unknown,
+        [Description("Short Range Device (Primer-2004)")]
+        PrimerBox
     }
 }
