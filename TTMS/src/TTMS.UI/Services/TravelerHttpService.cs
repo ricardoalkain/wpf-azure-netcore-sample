@@ -10,25 +10,26 @@ using TTMS.Common.Abstractions;
 using TTMS.Common.Models;
 using Polly;
 using Polly.Retry;
+using TTMS.UI.Helpers;
 
 namespace TTMS.UI.Services
 {
     public class TravelerHttpService : ITravelerService
     {
-        private readonly string defaultEndPoint = "beta/traveler";
-        private readonly string defaultMimeType = "application/json";
+        private const string defaultEndPoint = "beta/traveler";
+        private const string defaultMediaType = "application/json";
 
-        private readonly string baseUrl;
         private readonly HttpClient httpclient;
         private readonly RetryPolicy retryPolicy;
 
-        public TravelerHttpService(string apiUrl)
+        public TravelerHttpService(IHttpClientFactory clientFactory)
         {
-            baseUrl = apiUrl ?? throw new ArgumentNullException(nameof(apiUrl));
+            if (clientFactory == null)
+            {
+                throw new ArgumentNullException(nameof(clientFactory));
+            }
 
-            httpclient = new HttpClient { BaseAddress = new Uri(baseUrl) };
-            httpclient.DefaultRequestHeaders.Accept.Clear();
-            httpclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(defaultMimeType));
+            httpclient = clientFactory.CreateClient(Properties.Settings.Default.ApiUrl, defaultMediaType);
 
             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
                 retryCount: 3,
@@ -41,7 +42,7 @@ namespace TTMS.UI.Services
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(traveler), Encoding.UTF8, defaultMimeType);
+            var content = new StringContent(JsonConvert.SerializeObject(traveler), Encoding.UTF8, defaultMediaType);
 
             return await retryPolicy.ExecuteAsync(async () =>
             {
@@ -81,7 +82,7 @@ namespace TTMS.UI.Services
         {
             await retryPolicy.ExecuteAsync(async () =>
             {
-                var content = new StringContent(JsonConvert.SerializeObject(traveler), Encoding.UTF8, defaultMimeType);
+                var content = new StringContent(JsonConvert.SerializeObject(traveler), Encoding.UTF8, defaultMediaType);
 
                 var response = await httpclient.PutAsync($"{defaultEndPoint}/{traveler.Id}", content).ConfigureAwait(false);
                 ProcessHttpResponse(response);

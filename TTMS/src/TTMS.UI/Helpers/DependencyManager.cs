@@ -11,10 +11,8 @@ namespace TTMS.UI.Helpers
         {
             Container = new UnityContainer();
 
-            Container.RegisterType<ITravelerService, TravelerHttpService>(
-                new InjectionConstructor(
-                    Properties.Settings.Default.ApiUrl
-                ));
+            Container.RegisterType<IHttpClientFactory, HttpClientFactory>();
+            Container.RegisterType<ITravelerService, TravelerHttpService>();
 
             //Container.RegisterInstance<ITravelerService>(new TravelerHttpService(Properties.Settings.Default.ApiUrl));
         }

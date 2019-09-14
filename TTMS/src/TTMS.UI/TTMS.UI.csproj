@@ -122,6 +122,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\HttpClientFactory.cs" />
+    <Compile Include="Helpers\IHttpClientFactory.cs" />
     <Compile Include="Helpers\NullToStringConverter.cs" />
     <Compile Include="Helpers\EnumToStringConverter.cs" />
     <Compile Include="Helpers\EnumToListConverter.cs" />
