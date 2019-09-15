@@ -128,8 +128,7 @@
     <Compile Include="Helpers\EnumToStringConverter.cs" />
     <Compile Include="Helpers\EnumToListConverter.cs" />
     <Compile Include="Helpers\BoolToStringConverter.cs" />
-    <Compile Include="Services\ITravelerService.cs" />
-    <Compile Include="Services\TravelerService.cs" />
+    <Compile Include="Services\TravelerHttpService.cs" />
     <Compile Include="ViewModels\EditViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

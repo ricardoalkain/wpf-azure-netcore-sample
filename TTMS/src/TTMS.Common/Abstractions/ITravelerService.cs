@@ -2,7 +2,7 @@
 using TTMS.Common.Abstractions;
 using TTMS.Common.Entities;
 
-namespace TTMS.Web.Api.Services
+namespace TTMS.Common.Abstractions
 {
     public interface ITravelerService : IBasicDataProvider<Guid, Traveler>
     {

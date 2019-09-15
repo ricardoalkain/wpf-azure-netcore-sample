@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMS.Data.Entities;
+using TTMS.Common.Entities;
 using Dapper;
 
 namespace TTMS.Data.Repositories

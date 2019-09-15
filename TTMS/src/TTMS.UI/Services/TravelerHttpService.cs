@@ -15,7 +15,7 @@ using TTMS.UI.Helpers;
 
 namespace TTMS.UI.Services
 {
-    public class TravelerService : ITravelerService
+    public class TravelerHttpService : ITravelerService
     {
         private const string defaultEndPoint = "beta/traveler";
         private const string defaultMediaType = "application/json";
@@ -37,7 +37,7 @@ namespace TTMS.UI.Services
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
                 onRetry: (exception, calculareDuration) =>
                 {
-                    Console.WriteLine($"ERROR: {nameof(TravelerService)} => {exception.Message}");
+                    Console.WriteLine($"ERROR: {nameof(TravelerHttpService)} => {exception.Message}");
                 });
         }
 
@@ -45,7 +45,7 @@ namespace TTMS.UI.Services
         {
             var request = JsonConvert.SerializeObject(traveler.CreateRequest());
 
-            using (var content = new StringContent(request, Encoding.UTF8, defaultMimeType))
+            using (var content = new StringContent(request, Encoding.UTF8, defaultMediaType))
             {
                 return await retryPolicy.ExecuteAsync(async () =>
                 {
@@ -86,7 +86,7 @@ namespace TTMS.UI.Services
         {
             var request = JsonConvert.SerializeObject(traveler.CreateRequest());
 
-            using (var content = new StringContent(request, Encoding.UTF8, defaultMimeType))
+            using (var content = new StringContent(request, Encoding.UTF8, defaultMediaType))
             {
                 await retryPolicy.ExecuteAsync(async () =>
                 {

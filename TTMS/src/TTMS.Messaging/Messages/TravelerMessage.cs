@@ -1,4 +1,4 @@
-﻿using TTMS.Common.Models;
+﻿using TTMS.Common.Entities;
 
 namespace TTMS.Messaging
 {
