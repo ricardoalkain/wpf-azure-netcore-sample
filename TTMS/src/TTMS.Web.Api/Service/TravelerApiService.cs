@@ -1,79 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TTMS.Common.Abstractions;
-using TTMS.Common.Enums;
-using TTMS.Common.Models;
-using System.Linq;
+using TTMS.Common.Entities;
 using TTMS.Data.Repositories;
 
 namespace TTMS.Web.Api.Services
 {
-    public class TravelerApiService : ITravelerApiService
+    public class TravelerApiService : ITravelerService
     {
-        private readonly ITravelerService service;
+        private readonly ITravelerRepository travelerRepository;
 
-        public TravelerApiService(ITravelerService service)
+        public TravelerApiService(ITravelerRepository travelerRepository)
         {
-            this.service = service ?? throw new ArgumentNullException(nameof(service));
+            this.travelerRepository = travelerRepository ?? throw new ArgumentNullException(nameof(travelerRepository));
         }
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
-            return await service.CreateAsync(traveler).ConfigureAwait(false);
+            if (traveler.Id == default)
+            {
+                traveler.Id = Guid.NewGuid();
+            }
+
+            await travelerRepository.InsertOrReplaceAsync(traveler).ConfigureAwait(false);
+            return traveler;
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            await service.DeleteAsync(id).ConfigureAwait(false);
+            await travelerRepository.DeleteAsync(id).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
-            return await service.GetAllAsync().ConfigureAwait(false);
+            var travelers = await travelerRepository.GetAllAsync().ConfigureAwait(false);
+            return travelers;
         }
 
-        public async Task<IEnumerable<Traveler>> GetAllAsync(TravelerStatus? filterByStatus, bool loadPictures)
+        public async Task<Traveler> GetByIdAsync(Guid key)
         {
-            var list = await this.GetAllAsync().ConfigureAwait(false);
-
-            if (filterByStatus.HasValue)
-            {
-                list = list.Where(item => item.Status == filterByStatus);
-            }
-
-            if (!loadPictures)
-            {
-                list = list.Select(item =>
-                    {
-                        item.Picture = null;
-                        return item;
-                    });
-            }
-
-            return list;
-        }
-
-        public async Task<Traveler> GetByIdAsync(Guid id, bool loadPicture)
-        {
-            var traveler = await this.GetByIdAsync(id).ConfigureAwait(false);
-
-            if (!loadPicture)
-            {
-                traveler.Picture = null;
-            }
-
+            var traveler = await travelerRepository.GetByIdAsync(key).ConfigureAwait(false);
             return traveler;
-        }
-
-        public async Task<Traveler> GetByIdAsync(Guid id)
-        {
-            return await service.GetByIdAsync(id).ConfigureAwait(false);
         }
 
         public async Task UpdateAsync(Traveler traveler)
         {
-            await service.UpdateAsync(traveler).ConfigureAwait(false);
+            await travelerRepository.InsertOrReplaceAsync(traveler).ConfigureAwait(false);
         }
     }
 }

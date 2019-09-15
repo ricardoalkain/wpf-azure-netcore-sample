@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using TTMS.Data.Entities;
+using TTMS.Common.Entities;
 
 namespace TTMS.Data.Repositories
 {

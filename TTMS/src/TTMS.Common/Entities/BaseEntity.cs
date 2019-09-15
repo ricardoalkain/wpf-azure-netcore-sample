@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTMS.Data.Entities
+namespace TTMS.Common.Entities
 {
     public class BaseEntity
     {

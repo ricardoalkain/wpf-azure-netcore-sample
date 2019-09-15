@@ -1,12 +1,10 @@
 ﻿using System;
 using TTMS.Common.Enums;
 
-namespace TTMS.Common.Models
+namespace TTMS.Common.Entities
 {
-    public class Traveler
+    public class Traveler : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public string Alias { get; set; }

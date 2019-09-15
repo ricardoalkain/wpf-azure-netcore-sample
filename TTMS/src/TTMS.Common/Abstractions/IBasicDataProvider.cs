@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace TTMS.Common.Abstractions
 {
-    public interface IDataService<TKey, TModel>
+    public interface IBasicDataProvider<TKey, TModel>
     {
         Task<IEnumerable<TModel>> GetAllAsync();
 

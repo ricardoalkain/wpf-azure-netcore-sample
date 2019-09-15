@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Models;
+using TTMS.Common.Entities;
 using TTMS.UI.Helpers;
+using TTMS.UI.Services;
 using Unity;
 
 namespace TTMS.UI.ViewModels

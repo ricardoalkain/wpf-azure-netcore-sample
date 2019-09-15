@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TTMS.Common.Models;
+﻿using TTMS.Common.Entities;
 
 namespace TTMS.Common.DTO
 {

@@ -1,9 +1,9 @@
 ﻿using System;
-using TTMS.Data.Entities;
+using TTMS.Common.Entities;
 
 namespace TTMS.Data.Repositories
 {
-    public interface ITravelerRepository : IRepository<Guid,Traveler>
+    public interface ITravelerRepository : IRepository<Guid, Traveler>
     {
     }
 }
