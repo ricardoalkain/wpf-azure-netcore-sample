@@ -13,8 +13,6 @@ namespace TTMS.UI.Helpers
 
             Container.RegisterType<IHttpClientFactory, HttpClientFactory>();
             Container.RegisterType<ITravelerService, TravelerHttpService>();
-
-            //Container.RegisterInstance<ITravelerService>(new TravelerHttpService(Properties.Settings.Default.ApiUrl));
         }
 
         public static IUnityContainer Container { get; }
