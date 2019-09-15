@@ -1,10 +1,10 @@
 ﻿using System;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Models;
+using TTMS.Common.Entities;
 
 namespace TTMS.UI.Services
 {
-    public interface ITravelerService : IDataService<Guid, Traveler>
+    public interface ITravelerService : IBasicDataProvider<Guid, Traveler>
     {
     }
 }

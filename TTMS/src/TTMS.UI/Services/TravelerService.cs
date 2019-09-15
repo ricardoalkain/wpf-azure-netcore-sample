@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Models;
+using TTMS.Common.Entities;
 using Polly;
 using Polly.Retry;
+using TTMS.Common.DTO;
 
 namespace TTMS.UI.Services
 {
@@ -41,13 +42,16 @@ namespace TTMS.UI.Services
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(traveler), Encoding.UTF8, defaultMimeType);
+            var request = JsonConvert.SerializeObject(traveler.CreateRequest());
 
-            return await retryPolicy.ExecuteAsync(async () =>
+            using (var content = new StringContent(request, Encoding.UTF8, defaultMimeType))
             {
-                var response = await httpclient.PutAsync(defaultEndPoint, content).ConfigureAwait(false);
-                return await ProcessHttpResponse<Traveler>(response);
-            });
+                return await retryPolicy.ExecuteAsync(async () =>
+                {
+                    var response = await httpclient.PostAsync(defaultEndPoint, content).ConfigureAwait(false);
+                    return await ProcessHttpResponse<Traveler>(response);
+                });
+            }
         }
 
         public async Task DeleteAsync(Guid key)
@@ -79,13 +83,16 @@ namespace TTMS.UI.Services
 
         public async Task UpdateAsync(Traveler traveler)
         {
-            await retryPolicy.ExecuteAsync(async () =>
-            {
-                var content = new StringContent(JsonConvert.SerializeObject(traveler), Encoding.UTF8, defaultMimeType);
+            var request = JsonConvert.SerializeObject(traveler.CreateRequest());
 
-                var response = await httpclient.PutAsync($"{defaultEndPoint}/{traveler.Id}", content).ConfigureAwait(false);
-                ProcessHttpResponse(response);
-            });
+            using (var content = new StringContent(request, Encoding.UTF8, defaultMimeType))
+            {
+                await retryPolicy.ExecuteAsync(async () =>
+                {
+                    var response = await httpclient.PutAsync($"{defaultEndPoint}/{traveler.Id}", content).ConfigureAwait(false);
+                    ProcessHttpResponse(response);
+                });
+            }
         }
 
         private async Task<T> ProcessHttpResponse<T>(HttpResponseMessage response)

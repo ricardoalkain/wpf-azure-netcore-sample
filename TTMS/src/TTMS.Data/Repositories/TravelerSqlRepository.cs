@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using TTMS.Common.Enums;
-using TTMS.Data.Entities;
+using TTMS.Common.Entities;
 
 namespace TTMS.Data.Repositories
 {

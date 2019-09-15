@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TTMS.Common.Models;
+using TTMS.Common.Entities;
 using TTMS.Data.Repositories;
-using TTMS.Data.Services;
 
 namespace TTMS.Web.Api.Services
 {
@@ -18,9 +17,12 @@ namespace TTMS.Web.Api.Services
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
-            var entity = traveler.ToEntity();
-            await travelerRepository.InsertOrReplaceAsync(entity).ConfigureAwait(false);
-            traveler.ReadFrom(entity);
+            if (traveler.Id == default)
+            {
+                traveler.Id = Guid.NewGuid();
+            }
+
+            await travelerRepository.InsertOrReplaceAsync(traveler).ConfigureAwait(false);
             return traveler;
         }
 
@@ -32,18 +34,18 @@ namespace TTMS.Web.Api.Services
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
             var travelers = await travelerRepository.GetAllAsync().ConfigureAwait(false);
-            return travelers?.ToModel();
+            return travelers;
         }
 
         public async Task<Traveler> GetByIdAsync(Guid key)
         {
             var traveler = await travelerRepository.GetByIdAsync(key).ConfigureAwait(false);
-            return traveler?.ToModel();
+            return traveler;
         }
 
         public async Task UpdateAsync(Traveler traveler)
         {
-            await travelerRepository.InsertOrReplaceAsync(traveler.ToEntity()).ConfigureAwait(false);
+            await travelerRepository.InsertOrReplaceAsync(traveler).ConfigureAwait(false);
         }
     }
 }

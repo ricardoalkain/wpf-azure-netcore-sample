@@ -4,10 +4,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Swashbuckle.Swagger.Annotations;
-using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
-using TTMS.Common.Enums;
-using TTMS.Common.Models;
+using TTMS.Common.Entities;
 using TTMS.Web.Api.Services;
 
 namespace TTMS.Web.Api.Controllers
@@ -28,7 +26,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<TravelerResponse>), Description = "List of travelers in the system")]
         public async Task<IHttpActionResult> Get()
         {
-            var travelers = await dataService.GetAllAsync().ConfigureAwait(false);
+            IEnumerable<Traveler> travelers = await dataService.GetAllAsync().ConfigureAwait(false);
             return Ok(travelers.CreateResponse());
         }
 
@@ -52,12 +50,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(TravelerResponse), Description = "Registers a new traveler")]
         public async Task<IHttpActionResult> Post([FromBody]TravelerRequest traveler)
         {
-            if (!traveler.Id.HasValue)
-            {
-                traveler.Id = Guid.NewGuid();
-            }
-
-            var newTraveler = await dataService.CreateAsync(traveler.ToModel()).ConfigureAwait(false);
+            var newTraveler = await dataService.CreateAsync(traveler.ToEntity()).ConfigureAwait(false);
             var response = newTraveler.CreateResponse();
 
             return Created(Url.Link("DefaultApi", new { controller = "Traveler", id = response.Id }), response);
@@ -76,7 +69,7 @@ namespace TTMS.Web.Api.Controllers
                 return BadRequest("It's not allowed to change entity ID.");
             }
 
-            await dataService.UpdateAsync(traveler.ToModel()).ConfigureAwait(false);
+            await dataService.UpdateAsync(traveler.ToEntity()).ConfigureAwait(false);
 
             return Ok();
         }
