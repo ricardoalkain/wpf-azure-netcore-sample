@@ -18,8 +18,7 @@ namespace TTMS.Web.Api
             var dbConnectionStr = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
 
             container.RegisterType<ITravelerRepository, TravelerSqlRepository>(new InjectionConstructor(dbConnectionStr));
-            container.RegisterType<ITravelerService, TravelerService>();
-            container.RegisterType<ITravelerApiService, TravelerApiService>();
+            container.RegisterType<ITravelerService, TravelerApiService>();
 
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);

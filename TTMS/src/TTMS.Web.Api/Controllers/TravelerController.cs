@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Swashbuckle.Swagger.Annotations;
+using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
@@ -13,9 +14,9 @@ namespace TTMS.Web.Api.Controllers
 {
     public class TravelerController : ApiController
     {
-        private readonly ITravelerApiService dataService;
+        private readonly ITravelerService dataService;
 
-        public TravelerController(ITravelerApiService travelerService)
+        public TravelerController(ITravelerService travelerService)
         {
             dataService = travelerService;
         }
@@ -23,15 +24,11 @@ namespace TTMS.Web.Api.Controllers
         /// <summary>
         /// Returns a list of travelers.
         /// </summary>
-        /// <param name="filterByStatus">Filter results by this status</param>
-        /// <param name="loadPictures">Load traveler's picture data</param>
         /// <returns>List of travelers registered in the system</returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<TravelerResponse>), Description = "List of travelers in the system")]
-        public async Task<IHttpActionResult> Get(
-            [FromUri]TravelerStatus? filterByStatus = null,
-            [FromUri]bool loadPictures = false)
+        public async Task<IHttpActionResult> Get()
         {
-            var travelers = await dataService.GetAllAsync(filterByStatus, loadPictures).ConfigureAwait(false);
+            var travelers = await dataService.GetAllAsync().ConfigureAwait(false);
             return Ok(travelers.CreateResponse());
         }
 
@@ -39,12 +36,11 @@ namespace TTMS.Web.Api.Controllers
         /// Returns information about a
         /// </summary>
         /// <param name="id">Traveler's ID</param>
-        /// <param name="loadPicture">If "true" returns traveler's picture data</param>
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TravelerResponse), Description = "Information about the requested traveler")]
-        public async Task<IHttpActionResult> Get(Guid id, [FromUri]bool loadPicture = false)
+        public async Task<IHttpActionResult> Get(Guid id)
         {
-            var traveler = await dataService.GetByIdAsync(id, loadPicture).ConfigureAwait(false);
+            var traveler = await dataService.GetByIdAsync(id).ConfigureAwait(false);
             return Ok(traveler.CreateResponse());
         }
 

@@ -13,7 +13,7 @@ using Polly.Retry;
 
 namespace TTMS.UI.Services
 {
-    public class TravelerHttpService : ITravelerService
+    public class TravelerService : ITravelerService
     {
         private readonly string defaultEndPoint = "beta/traveler";
         private readonly string defaultMimeType = "application/json";
@@ -22,7 +22,7 @@ namespace TTMS.UI.Services
         private readonly HttpClient httpclient;
         private readonly RetryPolicy retryPolicy;
 
-        public TravelerHttpService(string apiUrl)
+        public TravelerService(string apiUrl)
         {
             baseUrl = apiUrl ?? throw new ArgumentNullException(nameof(apiUrl));
 
@@ -35,7 +35,7 @@ namespace TTMS.UI.Services
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
                 onRetry: (exception, calculareDuration) =>
                 {
-                    Console.WriteLine($"ERROR: {nameof(TravelerHttpService)} => {exception.Message}");
+                    Console.WriteLine($"ERROR: {nameof(TravelerService)} => {exception.Message}");
                 });
         }
 

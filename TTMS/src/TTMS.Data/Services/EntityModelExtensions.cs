@@ -4,7 +4,7 @@ using Models = TTMS.Common.Models;
 
 namespace TTMS.Data.Services
 {
-    internal static class EntityModelExtensions
+    public static class EntityModelExtensions
     {
         #region Model Extensions
 
