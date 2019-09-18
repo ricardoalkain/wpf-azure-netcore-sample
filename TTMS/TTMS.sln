@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.UI", "src\TTMS.UI\TTMS.UI.csproj", "{6E13019E-38C9-426D-A4BF-D4C035504EEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.Data", "src\TTMS.Data\TTMS.Data.csproj", "{E0718580-B874-4483-AF1D-270BDC6191F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTMS.Data", "src\TTMS.Data\TTMS.Data.csproj", "{E0718580-B874-4483-AF1D-270BDC6191F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

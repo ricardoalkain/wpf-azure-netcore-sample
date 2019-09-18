@@ -25,7 +25,7 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\data.json")]
+        [global::System.Configuration.DefaultSettingValueAttribute("DataFiles\\data.json")]
         public string DataSource {
             get {
                 return ((string)(this["DataSource"]));
@@ -34,10 +34,19 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\Pictures")]
-        public string ImageSource {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\TTMS\\Logs\\ttms-{Date}.log")]
+        public string LogFile {
             get {
-                return ((string)(this["ImageSource"]));
+                return ((string)(this["LogFile"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Information")]
+        public string LogLevel {
+            get {
+                return ((string)(this["LogLevel"]));
             }
         }
     }
