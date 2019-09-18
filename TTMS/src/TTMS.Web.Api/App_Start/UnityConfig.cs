@@ -1,7 +1,6 @@
 using System.Configuration;
 using System.Web.Http;
 using TTMS.Common.Abstractions;
-using TTMS.Data.Sql;
 using TTMS.Web.Api.Services;
 using Unity;
 using Unity.Injection;

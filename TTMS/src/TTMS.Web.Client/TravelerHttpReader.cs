@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Polly;
 using Polly.Retry;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
-using TTMS.Web.Client.Abstractions;
 
 namespace TTMS.Web.Client
 {
@@ -52,6 +50,15 @@ namespace TTMS.Web.Client
             {
                 var response = await httpclient.GetAsync($"{defaultEndPoint}/{id}?loadPicture=true").ConfigureAwait(false);
                 return await response.ReadAsync<Traveler>().ConfigureAwait(false);
+            });
+        }
+
+        public async Task<IEnumerable<Traveler>> GetByTypeAsync(TravelerType travelerType)
+        {
+            return await retryPolicy.ExecuteAsync(async () =>
+            {
+                var response = await httpclient.GetAsync($"{defaultEndPoint}?type={travelerType}&loadPictures=true").ConfigureAwait(false);
+                return await response.ReadAsync<IEnumerable<Traveler>>().ConfigureAwait(false);
             });
         }
     }

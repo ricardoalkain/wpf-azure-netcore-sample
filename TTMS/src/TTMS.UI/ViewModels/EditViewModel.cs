@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.Win32;
 using TTMS.Common.Abstractions;
 using TTMS.Common.Enums;
@@ -182,9 +184,17 @@ namespace TTMS.UI.ViewModels
                          "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
                          "Portable Network Graphic (*.png)|*.png|" +
                          "Bitmap (*.bmp)|*.bmp";
+            dlg.CheckFileExists = true;
 
             if (dlg.ShowDialog() == true)
             {
+                // Check for Azure Table row size limit (max 1MB)
+                var fileInfo = new FileInfo(dlg.FileName);
+                if (fileInfo.Length > 524288)
+                {
+                    throw new ArgumentOutOfRangeException("Picture is too large: File larger than 500KB are not allowed.\nPlease specify another file.");
+                }
+
                 var img = Image.FromFile(dlg.FileName);
                 var converter = new ImageConverter();
                 Picture = (byte[])converter.ConvertTo(img, typeof(byte[]));
