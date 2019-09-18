@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 using TTMS.Data.Repositories;
 
 namespace TTMS.Web.Api.Services

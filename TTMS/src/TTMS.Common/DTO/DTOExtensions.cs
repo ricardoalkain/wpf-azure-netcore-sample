@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.Common.DTO
 {
@@ -77,23 +77,7 @@ namespace TTMS.Common.DTO
 
         public static Traveler ToEntity(this TravelerResponse response)
         {
-            return new Traveler
-            {
-                Id = response.Id,
-                Name = response.Name,
-                Alias = response.Alias,
-                BirthDate = response.BirthDate,
-                BirthTimelineId = response.BirthTimelineId,
-                BirthLocation = response.BirthLocation,
-                LastDateTime = response.LastDateTime,
-                LastTimelineId = response.LastTimelineId,
-                LastLocation = response.LastLocation,
-                Picture = response.Picture,
-                Skills = response.Skills,
-                Status = response.Status,
-                DeviceModel = response.DeviceModel,
-                Type = response.Type
-            };
+            return response;
         }
     }
 }

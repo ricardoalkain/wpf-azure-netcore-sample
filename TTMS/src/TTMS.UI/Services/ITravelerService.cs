@@ -1,6 +1,6 @@
 ﻿using System;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.UI.Services
 {

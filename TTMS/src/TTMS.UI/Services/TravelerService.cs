@@ -6,11 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using TTMS.Common.Abstractions;
-using TTMS.Common.Entities;
 using Polly;
 using Polly.Retry;
 using TTMS.Common.DTO;
+using TTMS.Common.Models;
 
 namespace TTMS.UI.Services
 {

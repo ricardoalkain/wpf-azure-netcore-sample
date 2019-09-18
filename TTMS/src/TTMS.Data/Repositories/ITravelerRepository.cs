@@ -1,5 +1,5 @@
 ﻿using System;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.Data.Repositories
 {
