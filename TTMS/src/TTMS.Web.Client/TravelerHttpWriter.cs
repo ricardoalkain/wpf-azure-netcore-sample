@@ -7,7 +7,7 @@ using Polly;
 using Polly.Retry;
 using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.Web.Client
 {

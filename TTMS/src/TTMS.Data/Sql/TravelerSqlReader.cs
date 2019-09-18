@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 using Dapper;
 using TTMS.Common.Abstractions;
 

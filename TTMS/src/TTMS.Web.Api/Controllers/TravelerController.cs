@@ -6,7 +6,7 @@ using System.Web.Http;
 using Swashbuckle.Swagger.Annotations;
 using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 using TTMS.Web.Api.Services;
 
 namespace TTMS.Web.Api.Controllers
