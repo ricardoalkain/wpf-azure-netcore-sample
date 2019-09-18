@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.Data.Sql
 {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Polly;
 using Polly.Retry;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 using TTMS.Web.Client.Abstractions;
 
 namespace TTMS.Web.Client

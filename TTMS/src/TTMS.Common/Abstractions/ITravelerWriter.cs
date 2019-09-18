@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.Common.Abstractions
 {

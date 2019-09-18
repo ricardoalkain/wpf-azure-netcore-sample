@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Entities;
+using TTMS.Common.Models;
 
 namespace TTMS.Messaging.Producers
 {
