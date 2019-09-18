@@ -35,7 +35,7 @@ namespace TTMS.ConsumerService.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ttms_db")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ttms_read")]
         public string IncomingMessageQueue {
             get {
                 return ((string)(this["IncomingMessageQueue"]));

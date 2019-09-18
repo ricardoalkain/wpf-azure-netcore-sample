@@ -15,7 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.Web.Api", "src\TTMS.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.ConsumerService", "src\TTMS.ConsumerService\TTMS.ConsumerService.csproj", "{7817DD2E-CA78-44C2-8EEA-C51CAEECA44B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.Messaging", "src\TTMS.Messaging\TTMS.Messaging.csproj", "{94BD4C0B-D2EE-4498-8E0D-A3A1FA4952BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTMS.Messaging", "src\TTMS.Messaging\TTMS.Messaging.csproj", "{94BD4C0B-D2EE-4498-8E0D-A3A1FA4952BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTMS.Web.Client", "src\TTMS.Web.Client\TTMS.Web.Client.csproj", "{78932711-8EE1-4DCD-9C38-94E68F0E051E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{94BD4C0B-D2EE-4498-8E0D-A3A1FA4952BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94BD4C0B-D2EE-4498-8E0D-A3A1FA4952BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94BD4C0B-D2EE-4498-8E0D-A3A1FA4952BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78932711-8EE1-4DCD-9C38-94E68F0E051E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78932711-8EE1-4DCD-9C38-94E68F0E051E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78932711-8EE1-4DCD-9C38-94E68F0E051E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78932711-8EE1-4DCD-9C38-94E68F0E051E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

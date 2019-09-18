@@ -31,5 +31,23 @@ namespace TTMS.UI.Properties {
                 return ((string)(this["ApiUrl"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("amqp://guest:guest@localhost:5672/vhost")]
+        public string MessageBusConnection {
+            get {
+                return ((string)(this["MessageBusConnection"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ttms_write")]
+        public string OutgoingMessageQueue {
+            get {
+                return ((string)(this["OutgoingMessageQueue"]));
+            }
+        }
     }
 }

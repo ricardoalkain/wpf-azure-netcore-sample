@@ -1,4 +1,8 @@
-﻿using TTMS.ConsumerService.Properties;
+﻿using TTMS.Common.Abstractions;
+using TTMS.ConsumerService.Properties;
+using TTMS.Messaging.Config;
+using TTMS.Messaging.Consumers;
+using TTMS.Web.Client;
 using Unity;
 using Unity.Injection;
 
@@ -10,13 +14,14 @@ namespace TTMS.ConsumerService
         {
             Container = new UnityContainer();
 
-            Container.RegisterInstance(Settings.Default);
-            //Container.RegisterType<ITravelerService, TravelerHttpService>(
-            //    new InjectionConstructor(
-            //        Properties.Settings.Default.ApiUrl
-            //    ));
+            var messageConfig = new MessagingConfig
+            {
+                ServerConnection = Settings.Default.MessageBusConnection,
+                IncomingQueue = Settings.Default.IncomingMessageQueue
+            };
 
-            //Container.RegisterInstance<ITravelerService>(new TravelerHttpService(Properties.Settings.Default.ApiUrl));
+            Container.RegisterType<ITravelerWriter, TravelerHttpWriter>(new InjectionConstructor(Settings.Default.ApiUrl));
+            Container.RegisterType<IMessageConsumer, TravelerConsumer>(new InjectionConstructor(messageConfig, typeof(ITravelerWriter)));
         }
 
         public static IUnityContainer Container { get; }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TTMS.Data.Repositories
+namespace TTMS.Data.Abstractions
 {
-    public interface IRepository<TKey,TEntity>
+    public interface IRepository<TKey, TEntity>
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
 

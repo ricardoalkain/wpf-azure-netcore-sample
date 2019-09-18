@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE dbo.spu_AddOrUpdateTraveler
+﻿CREATE PROCEDURE dbo.spu_InserTraveler
     @id             UNIQUEIDENTIFIER = NULL,
     @type           INT,
     @name           NVARCHAR(100),
@@ -19,21 +19,7 @@ BEGIN
 
     IF EXISTS(SELECT 1 FROM dbo.Traveler WHERE Id = @id)
     BEGIN
-        UPDATE dbo.Traveler
-        SET [Type]            = @type,
-            [Name]            = @name,
-            [Status]          = @status,
-            [Alias]           = @alias,
-            [Picture]         = @picture,
-            [BirthDate]       = @birthDate,
-            [BirthTimelineId] = @birthTimeline,
-            [BirthLocation]   = @birthLocation,
-            [LastDateTime]    = @lastDateTime,
-            [LastTimelineId]  = @lastTimeline,
-            [LastLocation]    = @lastLocation,
-            [DeviceModel]     = @deviceModel,
-            [Skills]          = @skills
-        WHERE [Id] = @id
+        RAISERROR('There is already a traveler with this ID.', 16, 1)
     END
     ELSE
     BEGIN
@@ -69,5 +55,5 @@ BEGIN
             @skills)
     END
 
-    RETURN @@ROWCOUNT;
+    EXEC spu_GetTraveler @id;
 END

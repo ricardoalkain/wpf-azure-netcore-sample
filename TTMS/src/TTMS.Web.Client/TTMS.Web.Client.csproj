@@ -6,12 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Polly" Version="7.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.ComponentModel.DataAnnotations">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.DataAnnotations.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\TTMS.Common\TTMS.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -68,9 +68,6 @@
     <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
     </Reference>
-    <Reference Include="Polly.Net40Async, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Polly.Net40Async.5.9.0\lib\net40\Polly.Net40Async.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -122,13 +119,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\HttpClientFactory.cs" />
-    <Compile Include="Helpers\IHttpClientFactory.cs" />
     <Compile Include="Helpers\NullToStringConverter.cs" />
     <Compile Include="Helpers\EnumToStringConverter.cs" />
     <Compile Include="Helpers\EnumToListConverter.cs" />
     <Compile Include="Helpers\BoolToStringConverter.cs" />
-    <Compile Include="Services\TravelerHttpService.cs" />
+    <Compile Include="Services\ITravelerService.cs" />
+    <Compile Include="Services\TravelerService.cs" />
     <Compile Include="ViewModels\EditViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -188,6 +184,14 @@
     <ProjectReference Include="..\TTMS.Common\TTMS.Common.csproj">
       <Project>{da5655fb-a4b9-46ee-ad21-8da8da760ff7}</Project>
       <Name>TTMS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TTMS.Messaging\TTMS.Messaging.csproj">
+      <Project>{94BD4C0B-D2EE-4498-8E0D-A3A1FA4952BA}</Project>
+      <Name>TTMS.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TTMS.Web.Client\TTMS.Web.Client.csproj">
+      <Project>{78932711-8EE1-4DCD-9C38-94E68F0E051E}</Project>
+      <Name>TTMS.Web.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using TTMS.Common.Abstractions;
 using TTMS.Common.Entities;
+using TTMS.Data.Abstractions;
 
-namespace TTMS.Data.Repositories
+namespace TTMS.Data.JsonFile
 {
-    public class TravelerFileRepository : ITravelerRepository
+    public class TravelerFileRepository : ITravelerReader, ITravelerWriter
     {
         private readonly string fileName;
 
@@ -27,13 +29,34 @@ namespace TTMS.Data.Repositories
             return await LoadFromFileAsync().ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<Traveler>> GetAsync(Func<Traveler, bool> filter)
+        {
+            var list = await LoadFromFileAsync().ConfigureAwait(false);
+            return list?.Where(filter);
+        }
+
         public async Task<Traveler> GetByIdAsync(Guid id)
         {
             var travelers = await GetAllAsync();
             return travelers.FirstOrDefault(traveler => traveler.Id.Equals(id));
         }
 
-        public async Task InsertOrReplaceAsync(Traveler traveler)
+        public async Task<Traveler> CreateAsync(Traveler traveler)
+        {
+            if (traveler == null)
+            {
+                throw new ArgumentNullException(nameof(traveler));
+            }
+
+            var travelers = (await GetAllAsync()).ToList();
+            travelers.Add(traveler);
+
+            SaveToFile(travelers);
+
+            return traveler;
+        }
+
+        public async Task UpdateAsync(Traveler traveler)
         {
             if (traveler == null)
             {
@@ -45,12 +68,11 @@ namespace TTMS.Data.Repositories
 
             if (index < 0)
             {
-                travelers.Add(traveler);
+                throw new KeyNotFoundException("No traveler with this ID was found to be updated.");
+
             }
-            else
-            {
-                travelers[index] = traveler;
-            }
+
+            travelers[index] = traveler;
 
             SaveToFile(travelers);
         }
@@ -83,6 +105,11 @@ namespace TTMS.Data.Repositories
                 var fileContent = await file.ReadToEndAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<List<Traveler>>(fileContent);
             }
+        }
+
+        public async Task<bool> Exists(Guid id)
+        {
+            return (await GetByIdAsync(id).ConfigureAwait(false)) != null;
         }
     }
 }

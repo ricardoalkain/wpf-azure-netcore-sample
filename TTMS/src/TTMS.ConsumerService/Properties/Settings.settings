@@ -10,7 +10,7 @@
       <Value Profile="(Default)">amqp://guest:guest@localhost:5672/vhost</Value>
     </Setting>
     <Setting Name="IncomingMessageQueue" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ttms_db</Value>
+      <Value Profile="(Default)">ttms_read</Value>
     </Setting>
     <Setting Name="ApiUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://localhost:44347</Value>

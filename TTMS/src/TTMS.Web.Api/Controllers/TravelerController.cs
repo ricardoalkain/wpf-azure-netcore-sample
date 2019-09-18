@@ -7,16 +7,17 @@ using Swashbuckle.Swagger.Annotations;
 using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
 using TTMS.Common.Entities;
+using TTMS.Web.Api.Services;
 
 namespace TTMS.Web.Api.Controllers
 {
     public class TravelerController : ApiController
     {
-        private readonly ITravelerService dataService;
+        private readonly ITravelerDbService service;
 
-        public TravelerController(ITravelerService travelerService)
+        public TravelerController(ITravelerDbService travelerService)
         {
-            dataService = travelerService;
+            service = travelerService;
         }
 
         /// <summary>
@@ -26,7 +27,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<TravelerResponse>), Description = "List of travelers in the system")]
         public async Task<IHttpActionResult> Get()
         {
-            IEnumerable<Traveler> travelers = await dataService.GetAllAsync().ConfigureAwait(false);
+            IEnumerable<Traveler> travelers = await service.GetAllAsync().ConfigureAwait(false);
             return Ok(travelers.CreateResponse());
         }
 
@@ -38,7 +39,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TravelerResponse), Description = "Information about the requested traveler")]
         public async Task<IHttpActionResult> Get(Guid id)
         {
-            var traveler = await dataService.GetByIdAsync(id).ConfigureAwait(false);
+            var traveler = await service.GetByIdAsync(id).ConfigureAwait(false);
             return Ok(traveler.CreateResponse());
         }
 
@@ -50,7 +51,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(TravelerResponse), Description = "Registers a new traveler")]
         public async Task<IHttpActionResult> Post([FromBody]TravelerRequest traveler)
         {
-            var newTraveler = await dataService.CreateAsync(traveler.ToEntity()).ConfigureAwait(false);
+            var newTraveler = await service.CreateAsync(traveler.ToEntity()).ConfigureAwait(false);
             var response = newTraveler.CreateResponse();
 
             return Created(Url.Link("DefaultApi", new { controller = "Traveler", id = response.Id }), response);
@@ -69,7 +70,7 @@ namespace TTMS.Web.Api.Controllers
                 return BadRequest("It's not allowed to change entity ID.");
             }
 
-            await dataService.UpdateAsync(traveler.ToEntity()).ConfigureAwait(false);
+            await service.UpdateAsync(traveler.ToEntity()).ConfigureAwait(false);
 
             return Ok();
         }
@@ -81,7 +82,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, Description = "Removes a traveler")]
         public async Task<IHttpActionResult> Delete(Guid id)
         {
-            await dataService.DeleteAsync(id).ConfigureAwait(false);
+            await service.DeleteAsync(id).ConfigureAwait(false);
 
             return Ok();
         }

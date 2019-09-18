@@ -1,5 +1,6 @@
 ﻿using System;
 using Topshelf;
+using TTMS.Messaging.Consumers;
 using Unity;
 
 namespace TTMS.ConsumerService
@@ -11,11 +12,11 @@ namespace TTMS.ConsumerService
             var exitCode = HostFactory.Run(x =>
             {
 
-                x.Service<IListener>(service =>
+                x.Service<IMessageConsumer>(service =>
                 {
-                    service.ConstructUsing(s => DependencyManager.Container.Resolve<IListener>());
-                    service.WhenStarted(s => s.Start());
-                    service.WhenStopped(s => s.Stop());
+                    service.ConstructUsing(s => DependencyManager.Container.Resolve<IMessageConsumer>());
+                    service.WhenStarted(s => s.StartListening());
+                    service.WhenStopped(s => s.Dispose());
                 });
 
                 x.RunAsLocalSystem();

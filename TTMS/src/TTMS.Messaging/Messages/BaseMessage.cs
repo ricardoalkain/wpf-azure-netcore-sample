@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TTMS.Messaging
 {
-    public abstract class BaseMessage<T>
+    public class BaseMessage<T>
     {
         public Guid Key { get; set; }
 
