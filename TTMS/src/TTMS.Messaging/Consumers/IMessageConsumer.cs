@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TTMS.Messaging.Consumers
 {
@@ -8,6 +9,6 @@ namespace TTMS.Messaging.Consumers
     {
         void StartListening();
 
-        void ProcessMessage(string message);
+        Task ProcessMessageAsync(string message);
     }
 }

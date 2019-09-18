@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -43,7 +44,7 @@ namespace TTMS.Messaging.Consumers
                 try
                 {
                     receivedMessage = Encoding.UTF8.GetString(body);
-                    ProcessMessage(receivedMessage);
+                    ProcessMessageAsync(receivedMessage);
                     channel.BasicAck(deliveryTag: args.DeliveryTag, multiple: false);
                 }
                 catch
@@ -53,7 +54,7 @@ namespace TTMS.Messaging.Consumers
             };
         }
 
-        public abstract void ProcessMessage(string jsonMessage);
+        public abstract Task ProcessMessageAsync(string jsonMessage);
 
         public void Dispose()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TTMS.Common.Abstractions;
 using TTMS.Messaging.Config;
@@ -16,7 +17,7 @@ namespace TTMS.Messaging.Consumers
             writer = travelerWriter ?? throw new ArgumentNullException(nameof(travelerWriter));
         }
 
-        public override async void ProcessMessage(string jsonMessage)
+        public override async Task ProcessMessageAsync(string jsonMessage)
         {
             var msg = JsonConvert.DeserializeObject<TravelerMessage>(jsonMessage);
 
