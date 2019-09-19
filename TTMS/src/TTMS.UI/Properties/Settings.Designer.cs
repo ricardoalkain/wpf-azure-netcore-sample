@@ -31,5 +31,23 @@ namespace TTMS.UI.Properties {
                 return ((string)(this["ApiUrl"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\TTMS\\Logs\\ttms-{Date}.log")]
+        public string LogFile {
+            get {
+                return ((string)(this["LogFile"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Debug")]
+        public string LogLevel {
+            get {
+                return ((string)(this["LogLevel"]));
+            }
+        }
     }
 }

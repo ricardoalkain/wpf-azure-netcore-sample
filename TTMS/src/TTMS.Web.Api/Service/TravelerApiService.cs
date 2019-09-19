@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TTMS.Common.Models;
 using TTMS.Data.Repositories;
 
@@ -8,10 +9,12 @@ namespace TTMS.Web.Api.Services
 {
     public class TravelerApiService : ITravelerService
     {
+        private readonly ILogger logger;
         private readonly ITravelerRepository travelerRepository;
 
-        public TravelerApiService(ITravelerRepository travelerRepository)
+        public TravelerApiService(ILogger logger, ITravelerRepository travelerRepository)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.travelerRepository = travelerRepository ?? throw new ArgumentNullException(nameof(travelerRepository));
         }
 
@@ -20,6 +23,7 @@ namespace TTMS.Web.Api.Services
             if (traveler.Id == default)
             {
                 traveler.Id = Guid.NewGuid();
+                logger.LogDebug("Traveler ID auto-generated: {id}", traveler.Id);
             }
 
             await travelerRepository.InsertOrReplaceAsync(traveler).ConfigureAwait(false);

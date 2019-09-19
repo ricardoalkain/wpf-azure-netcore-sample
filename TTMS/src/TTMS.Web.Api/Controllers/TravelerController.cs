@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.Swagger.Annotations;
 using TTMS.Common.DTO;
 using TTMS.Common.Models;
@@ -13,10 +14,12 @@ namespace TTMS.Web.Api.Controllers
     public class TravelerController : ApiController
     {
         private readonly ITravelerService dataService;
+        private readonly ILogger logger;
 
-        public TravelerController(ITravelerService travelerService)
+        public TravelerController(ILogger logger, ITravelerService travelerService)
         {
-            dataService = travelerService;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.dataService = travelerService ?? throw new ArgumentNullException(nameof(travelerService));
         }
 
         /// <summary>
@@ -66,7 +69,9 @@ namespace TTMS.Web.Api.Controllers
         {
             if (id != traveler.Id)
             {
-                return BadRequest("It's not allowed to change entity ID.");
+                var msg = "It's not allowed to change entity ID.";
+                logger.LogWarning("BAD REQUEST: {msg} => {@Request}", msg, Request);
+                return BadRequest(msg);
             }
 
             await dataService.UpdateAsync(traveler.ToEntity()).ConfigureAwait(false);

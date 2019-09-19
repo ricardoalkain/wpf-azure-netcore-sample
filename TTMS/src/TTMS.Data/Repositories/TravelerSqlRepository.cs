@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
 
@@ -10,15 +11,24 @@ namespace TTMS.Data.Repositories
 {
     public class TravelerSqlRepository : ITravelerRepository
     {
+        private readonly ILogger logger;
         private readonly string connectionString;
 
-        public TravelerSqlRepository(string connectionstring)
+        public TravelerSqlRepository(ILogger logger, string connectionString)
         {
-            this.connectionString = connectionstring;
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.connectionString = connectionString;
         }
 
         public async Task DeleteAsync(Guid id)
         {
+            logger.LogDebug("{Method} => {id}", nameof(DeleteAsync), id);
+
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -34,6 +44,8 @@ namespace TTMS.Data.Repositories
 
         public async Task<Traveler> GetByIdAsync(Guid id)
         {
+            logger.LogDebug("{Method} => {id}", nameof(GetByIdAsync), id);
+
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -59,6 +71,8 @@ namespace TTMS.Data.Repositories
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
+            logger.LogDebug("{Method}", nameof(GetAllAsync));
+
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -82,6 +96,8 @@ namespace TTMS.Data.Repositories
 
         public async Task InsertOrReplaceAsync(Traveler traveler)
         {
+            logger.LogDebug("{Method} => {@Traveler}", nameof(InsertOrReplaceAsync), traveler);
+
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
