@@ -34,6 +34,24 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Temp\\TTMS\\Logs\\ttms.ui-{Date}.log")]
+        public string LogFile {
+            get {
+                return ((string)(this["LogFile"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Debug")]
+        public string LogLevel {
+            get {
+                return ((string)(this["LogLevel"]));
+            }
+        }
+
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("amqp://guest:guest@localhost:5672/vhost")]
         public string MessageBusConnection {
             get {

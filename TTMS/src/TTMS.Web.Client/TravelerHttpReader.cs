@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 using TTMS.Common.Abstractions;
@@ -16,9 +17,12 @@ namespace TTMS.Web.Client
 
         private readonly HttpClient httpclient;
         private readonly AsyncRetryPolicy retryPolicy;
+        private readonly ILogger logger;
 
-        public TravelerHttpReader(string apiUrl)
+        public TravelerHttpReader(ILogger logger, string apiUrl)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             if (string.IsNullOrEmpty(apiUrl))
             {
                 throw new ArgumentNullException(nameof(apiUrl));
@@ -31,12 +35,14 @@ namespace TTMS.Web.Client
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
                 onRetry: (exception, calculareDuration) =>
                 {
-                    Console.WriteLine($"ERROR: {nameof(TravelerHttpReader)} => {exception.Message}");
+                    logger.LogError(exception, "ERROR reading from API");
                 });
         }
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
+            logger.LogDebug("{Method}", nameof(GetAllAsync));
+
             return await retryPolicy.ExecuteAsync(async () =>
             {
                 var response = await httpclient.GetAsync($"{defaultEndPoint}?loadPictures=true").ConfigureAwait(false);
@@ -46,6 +52,7 @@ namespace TTMS.Web.Client
 
         public async Task<Traveler> GetByIdAsync(Guid id)
         {
+            logger.LogDebug("{Method} => {id}", nameof(GetByIdAsync), id);
             return await retryPolicy.ExecuteAsync(async () =>
             {
                 var response = await httpclient.GetAsync($"{defaultEndPoint}/{id}?loadPicture=true").ConfigureAwait(false);

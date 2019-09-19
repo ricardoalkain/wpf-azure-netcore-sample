@@ -5,6 +5,12 @@
     <Setting Name="ApiUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://localhost:44347</Value>
     </Setting>
+    <Setting Name="LogFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Temp\TTMS\Logs\ttms.ui-{Date}.log</Value>
+    </Setting>
+    <Setting Name="LogLevel" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Debug</Value>
+    </Setting>
     <Setting Name="MessageBusConnection" Type="System.String" Scope="Application">
       <Value Profile="(Default)">amqp://guest:guest@localhost:5672/vhost</Value>
     </Setting>

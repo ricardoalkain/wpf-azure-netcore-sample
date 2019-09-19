@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
@@ -18,9 +19,12 @@ namespace TTMS.Web.Client
 
         private readonly HttpClient httpclient;
         private readonly AsyncRetryPolicy retryPolicy;
+        private readonly ILogger logger;
 
-        public TravelerHttpWriter(string apiUrl)
+        public TravelerHttpWriter(ILogger logger, string apiUrl)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             if (string.IsNullOrEmpty(apiUrl))
             {
                 throw new ArgumentNullException(nameof(apiUrl));
@@ -31,23 +35,27 @@ namespace TTMS.Web.Client
             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
                 retryCount: 3,
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
-                onRetry: (exception, calculareDuration) =>
+                onRetry: (exception, duration) =>
                 {
-                    Console.WriteLine($"ERROR: {nameof(TravelerHttpReader)} => {exception.Message}");
+                    logger.LogError(exception, "ERROR: {Message}", exception.Message);
                 });
         }
 
-        public async Task DeleteAsync(Guid key)
+        public async Task DeleteAsync(Guid id)
         {
+            logger.LogDebug("{Method} => {id}", nameof(DeleteAsync), id);
+
             await retryPolicy.ExecuteAsync(async () =>
             {
-                var response = await httpclient.DeleteAsync($"{defaultEndPoint}/{key}").ConfigureAwait(false);
+                var response = await httpclient.DeleteAsync($"{defaultEndPoint}/{id}").ConfigureAwait(false);
                 response.CheckResult();
             });
         }
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
+            logger.LogDebug("{Method} => {@Traveler}", nameof(CreateAsync), traveler);
+
             var request = JsonConvert.SerializeObject(traveler.CreateRequest());
 
             using (var content = new StringContent(request, Encoding.UTF8, defaultMediaType))
@@ -62,6 +70,8 @@ namespace TTMS.Web.Client
 
         public async Task UpdateAsync(Traveler traveler)
         {
+            logger.LogDebug("{Method} => {@Traveler}", nameof(UpdateAsync), traveler);
+
             var request = JsonConvert.SerializeObject(traveler.CreateRequest());
 
             using (var content = new StringContent(request, Encoding.UTF8, defaultMediaType))

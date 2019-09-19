@@ -6,6 +6,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Logging;
 using TTMS.Messaging.Config;
 
 namespace TTMS.Messaging.Consumers
@@ -15,14 +16,18 @@ namespace TTMS.Messaging.Consumers
         private readonly TelemetryClient telemetryClient;
         private readonly DependencyTrackingTelemetryModule dependencyTrackingModule;
         private readonly QueueClient queueClient;
+        private readonly ILogger logger;
 
-        public BaseAzureConsumer(MessagingConfig config)
+        public BaseAzureConsumer(ILogger logger, MessagingConfig config)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
+            logger.LogInformation("");
             var telemetryConfig = TelemetryConfiguration.CreateDefault();
             telemetryConfig.InstrumentationKey = config.InstrumentationKey;
             telemetryConfig.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());

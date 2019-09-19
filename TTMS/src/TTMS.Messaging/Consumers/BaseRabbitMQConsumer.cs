@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -14,19 +15,25 @@ namespace TTMS.Messaging.Consumers
     {
         protected readonly IConnection connection;
         protected readonly IModel channel;
+        private readonly ILogger logger;
         protected readonly MessagingConfig config;
 
-        public BaseRabbitMQConsumer(MessagingConfig messagingConfig)
+        public BaseRabbitMQConsumer(ILogger logger, MessagingConfig messagingConfig)
         {
-            config = messagingConfig ?? throw new ArgumentNullException(nameof(messagingConfig));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.config = messagingConfig ?? throw new ArgumentNullException(nameof(messagingConfig));
+
+            logger.LogInformation("Creating RabbitMQ consumer...");
 
             var rabbitConnectionFactory = new ConnectionFactory { Uri = new Uri(messagingConfig.ServerConnection) };
-            connection = rabbitConnectionFactory.CreateConnection();
-            channel = connection.CreateModel();
+            this.connection = rabbitConnectionFactory.CreateConnection();
+            this.channel = connection.CreateModel();
         }
 
         public void StartListening()
         {
+            logger.LogInformation("Start listening RabbitMQ queue: {queue}", config.IncomingQueue);
+
             channel.QueueDeclare(config.IncomingQueue, true, false, false, null);
             channel.BasicQos(0, 1, false);
 
@@ -38,8 +45,9 @@ namespace TTMS.Messaging.Consumers
             consumer.Received += (model, args) =>
             {
                 var body = args.Body;
+                logger.LogDebug("Message received ({size} bytes)", body.Length);
 
-                string receivedMessage = null;
+                string receivedMessage;
 
                 try
                 {
@@ -58,6 +66,8 @@ namespace TTMS.Messaging.Consumers
 
         public void Dispose()
         {
+            logger.LogInformation("Disposing RabbitMQ consumer...");
+
             connection.Dispose();
             channel.Dispose();
         }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TTMS.Common.Abstractions;
 using TTMS.Messaging.Config;
@@ -11,15 +10,20 @@ namespace TTMS.Messaging.Consumers
     public class TravelerConsumer : BaseRabbitMQConsumer
     {
         private readonly ITravelerWriter writer;
+        private readonly ILogger logger;
 
-        public TravelerConsumer(MessagingConfig messagingConfig, ITravelerWriter travelerWriter) : base(messagingConfig)
+        public TravelerConsumer(ILogger logger, MessagingConfig messagingConfig, ITravelerWriter travelerWriter) : base(logger, messagingConfig)
         {
-            writer = travelerWriter ?? throw new ArgumentNullException(nameof(travelerWriter));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.writer = travelerWriter ?? throw new ArgumentNullException(nameof(travelerWriter));
         }
 
         public override async Task ProcessMessageAsync(string jsonMessage)
         {
+            logger.LogDebug("Deserializing message...");
             var msg = JsonConvert.DeserializeObject<TravelerMessage>(jsonMessage);
+            logger.LogInformation("Traveler Message received: {type}", msg.Type);
+
 
             switch (msg.Type)
             {
@@ -33,7 +37,9 @@ namespace TTMS.Messaging.Consumers
                     await writer.DeleteAsync(msg.Content.Id).ConfigureAwait(false);
                     break;
                 default:
-                    throw new NotImplementedException($"No action implemented for messages of type {msg.Type}");
+                    var ex = new NotImplementedException($"No action implemented for messages of type {msg.Type}");
+                    logger.LogError(ex, "Error routing Traveler message");
+                    throw ex;
             }
         }
     }
