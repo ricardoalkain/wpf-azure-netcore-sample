@@ -7,20 +7,30 @@ using System.Threading.Tasks;
 using TTMS.Common.Models;
 using Dapper;
 using TTMS.Common.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace TTMS.Data.Sql
 {
     public class TravelerSqlReader : ITravelerReader
     {
+        private readonly ILogger logger;
         private readonly string connectionString;
 
-        public TravelerSqlReader(string connectionstring)
+        public TravelerSqlReader(ILogger logger, string connectionString)
         {
-            this.connectionString = connectionstring;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+            this.connectionString = connectionString;
         }
 
         public async Task<Traveler> GetByIdAsync(Guid id)
         {
+            logger.LogDebug("{Method} => {id}", nameof(GetByIdAsync), id);
+
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -39,6 +49,8 @@ namespace TTMS.Data.Sql
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
+            logger.LogDebug("{Method}", nameof(GetAllAsync));
+
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -46,32 +58,6 @@ namespace TTMS.Data.Sql
                 return (await connection.QueryAsync<Traveler>(
                     sql: "dbo.spu_GetAllTravelers",
                     commandType: CommandType.StoredProcedure))?.ToList();
-            }
-        }
-
-        public async Task<IEnumerable<Traveler>> GetAsync(Func<Traveler, bool> filter)
-        {
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var list = (await connection.QueryAsync<Traveler>(
-                    sql: "dbo.spu_GetAllTravelers",
-                    commandType: CommandType.StoredProcedure))?.Where(filter);
-
-                return list?.ToList();
-            }
-        }
-
-        public async Task<bool> Exists(Guid id)
-        {
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                return await connection.ExecuteScalarAsync<bool>(
-                    "SELECT COUNT(1) FROM dbo.Traveler WHERE Id = @id", new { id })
-                    .ConfigureAwait(false);
             }
         }
     }

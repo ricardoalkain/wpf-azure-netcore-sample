@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.Extensions.Logging;
 using TTMS.Common.Abstractions;
 using TTMS.Common.Models;
 
@@ -11,21 +12,31 @@ namespace TTMS.Data.Sql
 {
     public class TravelerSqlWriter : ITravelerWriter
     {
+        private readonly ILogger logger;
         private readonly string connectionString;
 
-        public TravelerSqlWriter(string connectionstring)
+        public TravelerSqlWriter(ILogger logger, string connectionString)
         {
-            this.connectionString = connectionstring;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+
+            this.connectionString = connectionString;
         }
 
-        public async Task DeleteAsync(Guid key)
+        public async Task DeleteAsync(Guid id)
         {
+            logger.LogDebug("{Method} => {id}", nameof(DeleteAsync), id);
+
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 var parameters = new DynamicParameters();
-                parameters.Add("id", key);
+                parameters.Add("id", id);
 
                 await connection.ExecuteAsync(
                     sql: "dbo.spu_DeleteTraveler",
@@ -36,6 +47,8 @@ namespace TTMS.Data.Sql
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
+            logger.LogDebug("{Method} => {@Traveler}", nameof(CreateAsync), traveler);
+
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -50,6 +63,8 @@ namespace TTMS.Data.Sql
 
         public async Task UpdateAsync(Traveler traveler)
         {
+            logger.LogDebug("{Method} => {@Traveler}", nameof(UpdateAsync), traveler);
+
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();

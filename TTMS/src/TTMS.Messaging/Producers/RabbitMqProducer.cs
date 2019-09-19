@@ -8,7 +8,7 @@ using TTMS.Messaging.Config;
 
 namespace TTMS.Messaging.Producers
 {
-    public abstract class RabbitMqProducer<T> : IMessageProducer<T>
+    public class RabbitMqProducer<T> : IMessageProducer<T>
     {
         private readonly ILogger logger;
         private readonly ConnectionFactory factory;

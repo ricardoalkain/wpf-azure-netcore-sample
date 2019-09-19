@@ -5,11 +5,13 @@ using Serilog.Extensions.Logging;
 using TTMS.Common.Abstractions;
 using TTMS.Messaging;
 using TTMS.Messaging.Config;
+using TTMS.Messaging.Producers;
 using TTMS.UI.Properties;
 using TTMS.UI.Services;
 using TTMS.Web.Client;
 using Unity;
 using Unity.Injection;
+using Unity.Lifetime;
 using MEL = Microsoft.Extensions.Logging;
 
 namespace TTMS.UI.Helpers
@@ -29,10 +31,13 @@ namespace TTMS.UI.Helpers
 
             RegisterLogger();
 
-            Container.RegisterType<ITravelerReader,
-                TravelerHttpReader>(new InjectionConstructor(typeof(MEL.ILogger), apiUrl)); // Read from API
-            Container.RegisterType<ITravelerWriter,
-                TravelerMessageWriter>(new InjectionConstructor(typeof(MEL.ILogger), msgConfig)); // Write to Message Bus
+            Container.RegisterType(typeof(IMessageProducer<>), typeof(RabbitMqProducer<>),
+                new SingletonLifetimeManager(), new InjectionConstructor(typeof(MEL.ILogger), msgConfig)); // Pubilhes to RabbitMQ
+
+            Container.RegisterType<ITravelerReader, TravelerHttpReader>(
+                new InjectionConstructor(typeof(MEL.ILogger), apiUrl)); // Read from API
+
+            Container.RegisterType<ITravelerWriter, TravelerMessageWriter>(); // Write to Message Bus
 
             Container.RegisterType<ITravelerService, TravelerService>();
         }

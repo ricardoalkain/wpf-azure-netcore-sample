@@ -6,7 +6,7 @@ using TTMS.Messaging.Config;
 
 namespace TTMS.Messaging.Consumers
 {
-    public class TravelerConsumer : BaseRabbitMQConsumer
+    public class TravelerConsumer : BaseRabbitMQConsumer, IMessageConsumer
     {
         private readonly ITravelerWriter writer;
         private readonly ILogger logger;

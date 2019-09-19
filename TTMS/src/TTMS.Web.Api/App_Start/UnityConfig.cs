@@ -10,6 +10,7 @@ using TTMS.Web.Api.Services;
 using Unity;
 using Unity.Injection;
 using Unity.WebApi;
+using MEL = Microsoft.Extensions.Logging;
 
 namespace TTMS.Web.Api
 {
@@ -22,8 +23,8 @@ namespace TTMS.Web.Api
 
             RegisterLogger(container);
 
-            container.RegisterType<ITravelerReader, TravelerSqlReader>(new InjectionConstructor(dbConnectionStr));
-            container.RegisterType<ITravelerWriter, TravelerSqlWriter>(new InjectionConstructor(dbConnectionStr));
+            container.RegisterType<ITravelerReader, TravelerSqlReader>(new InjectionConstructor(typeof(MEL.ILogger), dbConnectionStr));
+            container.RegisterType<ITravelerWriter, TravelerSqlWriter>(new InjectionConstructor(typeof(MEL.ILogger), dbConnectionStr));
             container.RegisterType<ITravelerDbService, TravelerDbService>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
