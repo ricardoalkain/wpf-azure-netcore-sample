@@ -43,7 +43,7 @@ namespace TTMS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Information")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Debug")]
         public string LogLevel {
             get {
                 return ((string)(this["LogLevel"]));

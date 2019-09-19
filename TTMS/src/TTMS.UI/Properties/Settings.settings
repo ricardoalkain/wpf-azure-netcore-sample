@@ -9,7 +9,7 @@
       <Value Profile="(Default)">C:\Temp\TTMS\Logs\ttms-{Date}.log</Value>
     </Setting>
     <Setting Name="LogLevel" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Information</Value>
+      <Value Profile="(Default)">Debug</Value>
     </Setting>
   </Settings>
 </SettingsFile>

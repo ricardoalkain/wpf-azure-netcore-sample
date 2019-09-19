@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using Serilog;
 using TTMS.Data.Models;
 using TTMS.Data.Services;
 using TTMS.UI.Helpers;
@@ -74,6 +75,8 @@ namespace TTMS.UI.ViewModels
 
         public async void RefreshData(Guid id)
         {
+            Log.Logger.Information("Refreshing Travelers list");
+
             var list = (await travelerService.GetAllAsync()).OrderBy(t => t.Name).ToList();
 
             var traveler = list.FirstOrDefault(t => t.Id.Equals(id));
@@ -89,24 +92,28 @@ namespace TTMS.UI.ViewModels
 
         private void EditTraveler()
         {
+            Log.Logger.Debug("Starting edit mode...");
             IsEnabled = false;
             editView.EditTraverler();
         }
 
         private void NewTraveler()
         {
+            Log.Logger.Debug("Creating new traveler...");
             IsEnabled = false;
             editView.NewTraverler();
         }
 
         private void EditCommitted()
         {
+            Log.Logger.Debug("Traveler editing committed");
             IsEnabled = true;
             RefreshData(editView.Id);
         }
 
         private void EditCancelled()
         {
+            Log.Logger.Debug("Traveler editing cancelled");
             IsEnabled = true;
             editView.ShowTraveler(SelectedTraveler.Id);
         }

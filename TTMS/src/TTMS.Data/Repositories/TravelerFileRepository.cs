@@ -80,14 +80,14 @@ namespace TTMS.Data.Repositories
 
         private void SaveToFile(List<Traveler> travelers)
         {
-            logger.LogInformation("Saving file...");
+            logger.LogInformation("Saving file: {File}", fileName);
             File.WriteAllText(fileName, JsonConvert.SerializeObject(travelers));
             logger.LogInformation("File saved");
         }
 
         private async Task<List<Traveler>> LoadFromFileAsync()
         {
-            logger.LogInformation("Loading file...");
+            logger.LogInformation("Loading file: {File}", fileName);
 
             if (!File.Exists(fileName))
             {
