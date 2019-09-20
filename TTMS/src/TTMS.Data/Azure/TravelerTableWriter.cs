@@ -52,6 +52,7 @@ namespace TTMS.Data.Azure
             logger.LogDebug("{Method} => {@Traveler}", nameof(UpdateAsync), traveler);
 
             var entity = traveler.ToEntity();
+            entity.ETag = "*";
             var operation = TableOperation.Replace(entity);
             await table.ExecuteAsync(operation);
         }

@@ -9,7 +9,6 @@
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.10.0" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="4.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="RabbitMQ.Client" Version="5.1.1" />
   </ItemGroup>
 
   <ItemGroup>

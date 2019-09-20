@@ -13,44 +13,39 @@ namespace TTMS.Messaging.Consumers
 {
     public abstract class BaseAzureConsumer : IMessageConsumer
     {
-        private readonly TelemetryClient telemetryClient;
-        private readonly DependencyTrackingTelemetryModule dependencyTrackingModule;
-        private readonly QueueClient queueClient;
-        private readonly ILogger logger;
+        protected readonly TelemetryClient telemetryClient;
+        protected readonly QueueClient queueClient;
+        protected readonly ILogger logger;
+        protected readonly DependencyTrackingTelemetryModule dependencyTrackingModule;
 
-        public BaseAzureConsumer(ILogger logger, MessagingConfig config)
+        public BaseAzureConsumer(
+            ILogger logger,
+            TelemetryClient telemetryClient,
+            MessagingConfig config)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config));
             }
 
-            logger.LogInformation("");
-            var telemetryConfig = TelemetryConfiguration.CreateDefault();
-            telemetryConfig.InstrumentationKey = config.InstrumentationKey;
-            telemetryConfig.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.telemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
 
-            telemetryClient = new TelemetryClient(telemetryConfig)
-            {
-                InstrumentationKey = config.InstrumentationKey
-            };
-
-            dependencyTrackingModule = InitializeDependencyTracking(telemetryConfig);
-
+            this.logger.LogInformation("Initializing Service Bus client (queue {queue})...", config.IncomingQueue);
             queueClient = new QueueClient(config.ServerConnection, config.IncomingQueue);
         }
 
         public void StartListening()
         {
+            logger.LogInformation("Starting Service Bus consumer...");
+            telemetryClient.TrackEvent($"Consumer {this.GetType().FullName} started");
+
             var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
             {
                 MaxConcurrentCalls = 1,
                 AutoComplete = false
             };
 
-            //queueClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
             queueClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
         }
 
@@ -58,9 +53,11 @@ namespace TTMS.Messaging.Consumers
 
         public void Dispose()
         {
-            queueClient.CloseAsync().Wait();
+            logger.LogInformation("Stopping Service Bus consumer...");
+            telemetryClient.TrackEvent($"Consumer {this.GetType().FullName} stopped");
             telemetryClient.Flush();
-            dependencyTrackingModule.Dispose();
+
+            queueClient.CloseAsync().Wait();
         }
 
 
@@ -70,9 +67,12 @@ namespace TTMS.Messaging.Consumers
 
         private async Task ProcessMessagesAsync(Microsoft.Azure.ServiceBus.Message message, CancellationToken token)
         {
+            logger.LogInformation("Message received: {info}", message.MessageId);
+
             string stringMessage = Encoding.UTF8.GetString(message.Body);
             await ProcessMessageAsync(stringMessage);
-            telemetryClient.TrackEvent("New TTMS message received => " + stringMessage);
+
+            telemetryClient.TrackEvent("New TTMS message processed");
 
             if (!token.IsCancellationRequested)
             {
@@ -83,36 +83,10 @@ namespace TTMS.Messaging.Consumers
 
         private Task ExceptionReceivedHandler(ExceptionReceivedEventArgs args)
         {
-            Console.WriteLine($"{this.GetType().Name} encountered an exception {args.Exception}.");
+            logger.LogError(args.Exception, "Service Bus consumer error!");
             telemetryClient.TrackException(args.Exception);
-            var context = args.ExceptionReceivedContext;
-            Console.WriteLine("Exception context for troubleshooting:");
-            Console.WriteLine($" - Endpoint: {context.Endpoint}");
-            Console.WriteLine($" - Path:     {context.EntityPath}");
-            Console.WriteLine($" - Action:   {context.Action}");
 
             return Task.CompletedTask;
         }
-
-        private DependencyTrackingTelemetryModule InitializeDependencyTracking(TelemetryConfiguration configuration)
-        {
-            var module = new DependencyTrackingTelemetryModule();
-
-            // prevent Correlation Id to be sent to certain endpoints. You may add other domains as needed.
-            module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("core.windows.net");
-            module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("core.chinacloudapi.cn");
-            module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("core.cloudapi.de");
-            module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("core.usgovcloudapi.net");
-            module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("localhost");
-            module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("127.0.0.1");
-
-            module.IncludeDiagnosticSourceActivities.Add("Microsoft.Azure.ServiceBus");
-            module.IncludeDiagnosticSourceActivities.Add("Microsoft.Azure.EventHubs");
-
-            module.Initialize(configuration);
-
-            return module;
-        }
-
     }
 }

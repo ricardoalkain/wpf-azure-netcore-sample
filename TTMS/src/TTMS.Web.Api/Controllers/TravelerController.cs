@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.Swagger.Annotations;
-using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
 using TTMS.Common.Models;
 using TTMS.Web.Api.Services;
@@ -54,7 +53,7 @@ namespace TTMS.Web.Api.Controllers
         [SwaggerResponse(HttpStatusCode.Created, Type = typeof(TravelerResponse), Description = "Registers a new traveler")]
         public async Task<IHttpActionResult> Post([FromBody]TravelerRequest traveler)
         {
-            var newTraveler = await service.CreateAsync(traveler.ToEntity()).ConfigureAwait(false);
+            var newTraveler = await service.CreateAsync(traveler.ToModel()).ConfigureAwait(false);
             var response = newTraveler.CreateResponse();
 
             return Created(Url.Link("DefaultApi", new { controller = "Traveler", id = response.Id }), response);
@@ -75,7 +74,7 @@ namespace TTMS.Web.Api.Controllers
                 return BadRequest(msg);
             }
 
-            await service.UpdateAsync(traveler.ToEntity()).ConfigureAwait(false);
+            await service.UpdateAsync(traveler.ToModel()).ConfigureAwait(false);
 
             return Ok();
         }

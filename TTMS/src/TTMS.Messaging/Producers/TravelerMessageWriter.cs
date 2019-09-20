@@ -21,10 +21,7 @@ namespace TTMS.Messaging.Producers
         {
             logger.LogDebug("Sending message for new traveler => {@traveler}", traveler);
 
-            await Task.Run(() =>
-            {
-                producer.Publish(MessageType.Create, traveler);
-            });
+            await producer.PublishAsync(MessageType.Create, traveler);
 
             return traveler;
         }
@@ -33,21 +30,15 @@ namespace TTMS.Messaging.Producers
         {
             logger.LogDebug("Sending message for detelting traveler => {id}", id);
 
-            await Task.Run(() =>
-            {
-                var traveler = new Traveler { Id = id };
-                producer.Publish(MessageType.Delete, traveler);
-            });
+            var traveler = new Traveler { Id = id };
+            await producer.PublishAsync(MessageType.Delete, traveler);
         }
 
         public async Task UpdateAsync(Traveler traveler)
         {
             logger.LogDebug("Sending message for updating traveler => {@traveler}", traveler);
 
-            await Task.Run(() =>
-            {
-                producer.Publish(MessageType.Update, traveler);
-            });
+            await producer.PublishAsync(MessageType.Update, traveler);
         }
     }
 }

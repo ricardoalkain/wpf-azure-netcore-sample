@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TTMS.Common.Abstractions;
 using TTMS.Common.Models;
 
@@ -8,11 +9,13 @@ namespace TTMS.Web.Api.Services
 {
     public class TravelerDbService : ITravelerDbService
     {
+        private readonly ILogger logger;
         private readonly ITravelerReader reader;
         private readonly ITravelerWriter writer;
 
-        public TravelerDbService(ITravelerReader reader, ITravelerWriter writer)
+        public TravelerDbService(ILogger logger, ITravelerReader reader, ITravelerWriter writer)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
             this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
         }
@@ -22,6 +25,7 @@ namespace TTMS.Web.Api.Services
             if (traveler.Id == default)
             {
                 traveler.Id = Guid.NewGuid();
+                logger.LogInformation("New traveler key generated: {id}", traveler.Id);
             }
 
             return await writer.CreateAsync(traveler).ConfigureAwait(false);

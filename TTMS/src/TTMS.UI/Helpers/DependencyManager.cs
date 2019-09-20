@@ -3,6 +3,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Logging;
 using TTMS.Messaging.Config;
 using TTMS.Messaging.Producers;
 using TTMS.UI.Properties;
@@ -28,9 +29,9 @@ namespace TTMS.UI.Helpers
                 OutgoingQueue = Settings.Default.OutgoingMessageQueue
             };
 
-            RegisterLogger();
+            Container.RegisterSerilog("TTMS.UI", Settings.Default.LogLevel, Settings.Default.LogFile);
 
-            Container.RegisterType(typeof(IMessageProducer<>), typeof(RabbitMqProducer<>),
+            Container.RegisterType(typeof(IMessageProducer<>), typeof(AzureServiceBusProducer<>),
                 new SingletonLifetimeManager(), new InjectionConstructor(typeof(MEL.ILogger), msgConfig)); // Pubilhes to RabbitMQ
 
             Container.RegisterType<ITravelerReader, TravelerHttpReader>(
@@ -42,24 +43,5 @@ namespace TTMS.UI.Helpers
         }
 
         public static IUnityContainer Container { get; }
-
-        private static void RegisterLogger()
-        {
-            var logFolder = Settings.Default.LogFile;
-            if (!Enum.TryParse(Settings.Default.LogLevel, out LogEventLevel logLevel))
-            {
-                logLevel = LogEventLevel.Debug;
-            }
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Is(logLevel)
-                .WriteTo.Console()
-                .WriteTo.RollingFile(logFolder)
-                .CreateLogger();
-
-            var ilogger = new SerilogLoggerProvider(Log.Logger).CreateLogger("TTMS.UI");
-
-            Container.RegisterInstance(ilogger);
-        }
     }
 }

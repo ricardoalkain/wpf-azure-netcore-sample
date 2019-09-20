@@ -54,7 +54,7 @@ namespace TTMS.Common.DTO
             return travelers.Select(t => t.CreateResponse());
         }
 
-        public static Traveler ToEntity(this TravelerRequest request)
+        public static Traveler ToModel(this TravelerRequest request)
         {
             return new Traveler
             {
@@ -75,25 +75,9 @@ namespace TTMS.Common.DTO
             };
         }
 
-        public static Traveler ToEntity(this TravelerResponse response)
+        public static Traveler ToModel(this TravelerResponse response)
         {
-            return new Traveler
-            {
-                Id = response.Id,
-                Name = response.Name,
-                Alias = response.Alias,
-                BirthDate = response.BirthDate,
-                BirthTimelineId = response.BirthTimelineId,
-                BirthLocation = response.BirthLocation,
-                LastDateTime = response.LastDateTime,
-                LastTimelineId = response.LastTimelineId,
-                LastLocation = response.LastLocation,
-                Picture = response.Picture,
-                Skills = response.Skills,
-                Status = response.Status,
-                DeviceModel = response.DeviceModel,
-                Type = response.Type
-            };
+            return response;
         }
     }
 }

@@ -29,8 +29,8 @@ namespace TTMS.Data.Entities
 
         public string LastLocation { get; set; }
 
-        public TravelerStatus Status { get; set; }
+        public int Status { get; set; }
 
-        public DeviceModel DeviceModel { get; set; }
+        public int DeviceModel { get; set; }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System;
+using Microsoft.ApplicationInsights;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Insights;
+using TTMS.Common.Logging;
 using TTMS.ConsumerService.Properties;
 using TTMS.Messaging.Config;
 using TTMS.Messaging.Consumers;
@@ -25,31 +28,17 @@ namespace TTMS.ConsumerService
                 IncomingQueue = Settings.Default.IncomingMessageQueue
             };
 
-            RegisterLogger();
+            Container.RegisterSerilog("TTMS.local", Settings.Default.LogLevel, Settings.Default.LogFile);
 
-            Container.RegisterType<ITravelerWriter, TravelerHttpWriter>(new InjectionConstructor(typeof(MEL.ILogger), Settings.Default.ApiUrl));
-            Container.RegisterType<IMessageConsumer, TravelerConsumer>(new InjectionConstructor(typeof(MEL.ILogger), messageConfig, typeof(ITravelerWriter)));
+            Container.RegisterTelemetry(Settings.Default.InstrumentationKey);
+
+            Container.RegisterType<ITravelerWriter, TravelerHttpWriter>(
+                new InjectionConstructor(typeof(MEL.ILogger), Settings.Default.ApiUrl));
+
+            Container.RegisterSingleton<IMessageConsumer, TravelerConsumer>(
+                new InjectionConstructor(typeof(MEL.ILogger), typeof(TelemetryClient), messageConfig, typeof(ITravelerWriter)));
         }
 
         public static IUnityContainer Container { get; }
-
-        private static void RegisterLogger()
-        {
-            var logFolder = Settings.Default.LogFile;
-            if (!Enum.TryParse(Settings.Default.LogLevel, out LogEventLevel logLevel))
-            {
-                logLevel = LogEventLevel.Debug;
-            }
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Is(logLevel)
-                .WriteTo.Console()
-                .WriteTo.RollingFile(logFolder)
-                .CreateLogger();
-
-            var ilogger = new SerilogLoggerProvider(Log.Logger).CreateLogger("TTMS.Local");
-
-            Container.RegisterInstance(ilogger);
-        }
     }
 }

@@ -50,15 +50,21 @@ namespace TTMS.Data.Azure
             var continuationToken = default(TableContinuationToken);
             var results = new List<TEntity>();
             int remaining;
+            int total = 0;
 
             do
             {
                 var queryResult = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
                 results.AddRange(queryResult.Results);
                 continuationToken = queryResult.ContinuationToken;
-                remaining = tableQuery.TakeCount.Value - results.Count;
 
-                logger.LogDebug("Fetched {Current} from {Total}", results.Count, tableQuery.TakeCount.Value);
+                if (total == 0)
+                {
+                    total = tableQuery.TakeCount.GetValueOrDefault();
+                }
+                remaining = total - results.Count;
+
+                logger.LogDebug("Fetched {Current} from {Total}", results.Count, total);
 
             } while (continuationToken != null && remaining > 0);
 

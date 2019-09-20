@@ -27,8 +27,8 @@ namespace TTMS.Data.Extensions
                 LastLocation = model.LastLocation,
                 Picture = model.Picture,
                 Skills = model.Skills,
-                Status = model.Status,
-                DeviceModel = model.DeviceModel,
+                Status = (int)model.Status,
+                DeviceModel = (int)model.DeviceModel,
             };
         }
 
@@ -58,8 +58,8 @@ namespace TTMS.Data.Extensions
                 LastLocation = entity.LastLocation,
                 Picture = entity.Picture,
                 Skills = entity.Skills,
-                Status = entity.Status,
-                DeviceModel = entity.DeviceModel,
+                Status = (TravelerStatus)entity.Status,
+                DeviceModel = (DeviceModel)entity.DeviceModel,
             };
         }
 

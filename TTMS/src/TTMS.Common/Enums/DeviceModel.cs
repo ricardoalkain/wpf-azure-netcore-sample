@@ -10,7 +10,7 @@ namespace TTMS.Common.Enums
         Capsule,
         [Description("Suitcase (1891 model)")]
         Suitcase,
-        [Description("Pocket Watch (1963 Mount Royal)")]
+        [Description("1963 Mount Royal Pocket Watch")]
         Watch,
         [Description("1985 DMC-12 DeLorean")]
         DeLorean,

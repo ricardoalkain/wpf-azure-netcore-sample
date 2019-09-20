@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TTMS.Messaging.Producers
 {
     public interface IMessageProducer<T>
     {
-        void Publish(BaseMessage<T> message);
+        Task PublishAsync(BaseMessage<T> message);
 
-        void Publish(MessageType messageType, T content, Guid messageKey = default);
+        Task PublishAsync(MessageType messageType, T content, Guid messageKey = default);
     }
 }

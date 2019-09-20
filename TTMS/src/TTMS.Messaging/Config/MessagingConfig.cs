@@ -11,7 +11,5 @@ namespace TTMS.Messaging.Config
         public string IncomingQueue { get; set; }
 
         public string OutgoingQueue { get; set; }
-
-        public string InstrumentationKey { get; set; }
     }
 }
