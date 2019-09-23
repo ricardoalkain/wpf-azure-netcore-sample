@@ -1,9 +1,6 @@
-﻿using System;
-using Serilog;
-using Serilog.Events;
-using Serilog.Extensions.Logging;
-using TTMS.Common.Abstractions;
+﻿using TTMS.Common.Abstractions;
 using TTMS.Common.Logging;
+using TTMS.Common.Insights;
 using TTMS.Messaging.Config;
 using TTMS.Messaging.Producers;
 using TTMS.UI.Properties;
@@ -13,6 +10,7 @@ using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
 using MEL = Microsoft.Extensions.Logging;
+using Microsoft.ApplicationInsights;
 
 namespace TTMS.UI.Helpers
 {
@@ -30,9 +28,11 @@ namespace TTMS.UI.Helpers
             };
 
             Container.RegisterSerilog("TTMS.UI", Settings.Default.LogLevel, Settings.Default.LogFile);
+            Container.RegisterTelemetry(Settings.Default.InstrumentationKey);
 
             Container.RegisterType(typeof(IMessageProducer<>), typeof(AzureServiceBusProducer<>),
-                new SingletonLifetimeManager(), new InjectionConstructor(typeof(MEL.ILogger), msgConfig)); // Pubilhes to RabbitMQ
+                new SingletonLifetimeManager(), new InjectionConstructor(typeof(MEL.ILogger),
+                typeof(TelemetryClient), msgConfig)); // Pubilhes to Service Bus
 
             Container.RegisterType<ITravelerReader, TravelerHttpReader>(
                 new InjectionConstructor(typeof(MEL.ILogger), apiUrl)); // Read from API

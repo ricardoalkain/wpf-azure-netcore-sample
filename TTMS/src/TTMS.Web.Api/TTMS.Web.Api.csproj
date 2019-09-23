@@ -155,6 +155,7 @@
     <Compile Include="Service\TravelerDbService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="nlog.config" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

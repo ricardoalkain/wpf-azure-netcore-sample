@@ -49,10 +49,11 @@ namespace TTMS.UI.Properties {
                 return ((string)(this["LogLevel"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("amqp://guest:guest@localhost:5672/vhost")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Endpoint=sb://ric-startertask.servicebus.windows.net/;SharedAccessKeyName=AppShar" +
+            "edAccessKey;SharedAccessKey=0VMr8AjKo1rFllp7/Zn9MEDU1F2ibUJ0c7hP0QNQh88=")]
         public string MessageBusConnection {
             get {
                 return ((string)(this["MessageBusConnection"]));
@@ -65,6 +66,15 @@ namespace TTMS.UI.Properties {
         public string OutgoingMessageQueue {
             get {
                 return ((string)(this["OutgoingMessageQueue"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("e4cc6231-e52e-45ac-b739-fc2f0b74cabf")]
+        public string InstrumentationKey {
+            get {
+                return ((string)(this["InstrumentationKey"]));
             }
         }
     }

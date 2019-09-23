@@ -12,10 +12,13 @@
       <Value Profile="(Default)">Debug</Value>
     </Setting>
     <Setting Name="MessageBusConnection" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">amqp://guest:guest@localhost:5672/vhost</Value>
+      <Value Profile="(Default)">Endpoint=sb://ric-startertask.servicebus.windows.net/;SharedAccessKeyName=AppSharedAccessKey;SharedAccessKey=0VMr8AjKo1rFllp7/Zn9MEDU1F2ibUJ0c7hP0QNQh88=</Value>
     </Setting>
     <Setting Name="OutgoingMessageQueue" Type="System.String" Scope="Application">
       <Value Profile="(Default)">ttms_write</Value>
+    </Setting>
+    <Setting Name="InstrumentationKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">e4cc6231-e52e-45ac-b739-fc2f0b74cabf</Value>
     </Setting>
   </Settings>
 </SettingsFile>

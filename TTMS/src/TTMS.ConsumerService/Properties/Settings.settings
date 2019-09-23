@@ -10,13 +10,13 @@
       <Value Profile="(Default)">Endpoint=sb://ric-startertask.servicebus.windows.net/;SharedAccessKeyName=AppSharedAccessKey;SharedAccessKey=0VMr8AjKo1rFllp7/Zn9MEDU1F2ibUJ0c7hP0QNQh88=</Value>
     </Setting>
     <Setting Name="IncomingMessageQueue" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ttms_read</Value>
+      <Value Profile="(Default)">ttms_write</Value>
     </Setting>
     <Setting Name="ApiUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://localhost:44347</Value>
     </Setting>
     <Setting Name="ErrorMessageQueue" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ttms_error</Value>
+      <Value Profile="(Default)">ttms_read</Value>
     </Setting>
     <Setting Name="LogFile" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Temp\TTMS\Logs\ttms.srv-{Date}.log</Value>
