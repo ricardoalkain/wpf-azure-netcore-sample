@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
 
 namespace TTMS.Web.Api.Services
@@ -45,6 +46,12 @@ namespace TTMS.Web.Api.Services
         public async Task<Traveler> GetByIdAsync(Guid key)
         {
             var traveler = await reader.GetByIdAsync(key).ConfigureAwait(false);
+            return traveler;
+        }
+
+        public async Task<IEnumerable<Traveler>> GetByTypeAsync(TravelerType type)
+        {
+            var traveler = await reader.GetByTypeAsync(type).ConfigureAwait(false);
             return traveler;
         }
 

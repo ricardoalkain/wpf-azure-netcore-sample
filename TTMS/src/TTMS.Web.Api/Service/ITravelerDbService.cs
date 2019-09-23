@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
 
 namespace TTMS.Web.Api.Services
@@ -14,6 +15,8 @@ namespace TTMS.Web.Api.Services
         Task<IEnumerable<Traveler>> GetAllAsync();
 
         Task<Traveler> GetByIdAsync(Guid key);
+
+        Task<IEnumerable<Traveler>> GetByTypeAsync(TravelerType travelerType);
 
         Task UpdateAsync(Traveler traveler);
     }
