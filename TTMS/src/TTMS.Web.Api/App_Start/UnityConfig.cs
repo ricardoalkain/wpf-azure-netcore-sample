@@ -16,9 +16,13 @@ namespace TTMS.Web.Api
         public static void RegisterComponents()
         {
             var container = new UnityContainer();
-            var dbConnectionStr = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
 
-            container.RegisterSerilog("TTMS.API", ConfigurationManager.AppSettings["LogLevel"], ConfigurationManager.AppSettings["LogFile"]);
+            var dbConnectionStr = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
+            var logLevel = ConfigurationManager.AppSettings["LogLevel"];
+            var logFile = ConfigurationManager.AppSettings["LogFile"];
+            var instrumentationKey = ConfigurationManager.AppSettings["InstrumentationKey"];
+
+            container.RegisterLog("TTMS.API", logLevel, instrumentationKey, logFile);
 
             container.RegisterType<ITravelerReader, TravelerTableReader>(new InjectionConstructor(typeof(MEL.ILogger), dbConnectionStr));
             container.RegisterType<ITravelerWriter, TravelerTableWriter>(new InjectionConstructor(typeof(MEL.ILogger), dbConnectionStr));

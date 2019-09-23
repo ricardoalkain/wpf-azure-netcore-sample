@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DependencyCollector;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -11,68 +10,52 @@ namespace TTMS.Common.Logging
 {
     public class AppInsLogger : Microsoft.Extensions.Logging.ILogger, IDisposable
     {
-        private readonly string instrumentationKey;
         private readonly TelemetryClient telemetryClient;
         private readonly Microsoft.Extensions.Logging.ILogger logger;
 
-        public AppInsLogger(string logContext, LogLevel logLevel, string instrumentationKey = null, string logFileName = null)
+        public AppInsLogger(string logContext, LogLevel logLevel, TelemetryClient telemetryClient, string logFileName = null)
         {
-            this.instrumentationKey = instrumentationKey ?? throw new ArgumentNullException(nameof(instrumentationKey));
+            this.telemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
 
-            if (!string.IsNullOrEmpty(instrumentationKey))
+            var logEventLevel = LogEventLevel.Debug;
+
+            switch (logLevel)
             {
-                var telemetryConfig = TelemetryConfiguration.CreateDefault();
-                telemetryConfig.InstrumentationKey = instrumentationKey;
-                telemetryConfig.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());
-
-                telemetryClient = new TelemetryClient(telemetryConfig)
-                {
-                    InstrumentationKey = instrumentationKey
-                };
+                case LogLevel.Trace:
+                    logEventLevel = LogEventLevel.Verbose;
+                    break;
+                case LogLevel.Debug:
+                    logEventLevel = LogEventLevel.Debug;
+                    break;
+                case LogLevel.Information:
+                    logEventLevel = LogEventLevel.Information;
+                    break;
+                case LogLevel.Warning:
+                    logEventLevel = LogEventLevel.Warning;
+                    break;
+                case LogLevel.Error:
+                    logEventLevel = LogEventLevel.Error;
+                    break;
+                case LogLevel.Critical:
+                    logEventLevel = LogEventLevel.Fatal;
+                    break;
+                case LogLevel.None:
+                    logEventLevel = LogEventLevel.Error;
+                    break;
             }
+
+            var loggerConfiguration = new LoggerConfiguration()
+                .MinimumLevel.Is(logEventLevel)
+                .WriteTo.Console();
 
             if (!string.IsNullOrEmpty(logFileName))
             {
-                var logEventLevel = LogEventLevel.Debug;
-
-                switch (logLevel)
-                {
-                    case LogLevel.Trace:
-                        logEventLevel = LogEventLevel.Verbose;
-                        break;
-                    case LogLevel.Debug:
-                        logEventLevel = LogEventLevel.Debug;
-                        break;
-                    case LogLevel.Information:
-                        logEventLevel = LogEventLevel.Information;
-                        break;
-                    case LogLevel.Warning:
-                        logEventLevel = LogEventLevel.Warning;
-                        break;
-                    case LogLevel.Error:
-                        logEventLevel = LogEventLevel.Error;
-                        break;
-                    case LogLevel.Critical:
-                        logEventLevel = LogEventLevel.Fatal;
-                        break;
-                    case LogLevel.None:
-                        logEventLevel = LogEventLevel.Error;
-                        break;
-                }
-
-                var loggerConfiguration = new LoggerConfiguration()
-                    .MinimumLevel.Is(logEventLevel)
-                    .WriteTo.Console();
-
-                if (!string.IsNullOrEmpty(logFileName))
-                {
-                    loggerConfiguration.WriteTo.RollingFile(logFileName);
-                }
-
-                Serilog.Log.Logger = loggerConfiguration.CreateLogger();
-
-                logger = new SerilogLoggerProvider(Serilog.Log.Logger).CreateLogger(logContext);
+                loggerConfiguration.WriteTo.RollingFile(logFileName);
             }
+
+            Serilog.Log.Logger = loggerConfiguration.CreateLogger();
+
+            logger = new SerilogLoggerProvider(Serilog.Log.Logger).CreateLogger(logContext);
         }
 
         public IDisposable BeginScope<TState>(TState state)
@@ -89,9 +72,16 @@ namespace TTMS.Common.Logging
         {
             logger?.Log(logLevel, eventId, state, exception, formatter);
 
-            //if (telemetryClient != null)
-            //{
-            //}
+            if (exception == null)
+            {
+                telemetryClient.TrackEvent($"{logLevel.ToString().ToUpper()}: {formatter(state, exception)}");
+            }
+            else
+            {
+                telemetryClient.TrackException(exception);
+            }
+
+            telemetryClient.Flush();
         }
 
         #region IDisposable Support
@@ -104,7 +94,8 @@ namespace TTMS.Common.Logging
             {
                 if (disposing)
                 {
-                    telemetryClient?.Flush();
+                    telemetryClient.Flush();
+                    Thread.Sleep(1000);
                 }
 
                 disposedValue = true;

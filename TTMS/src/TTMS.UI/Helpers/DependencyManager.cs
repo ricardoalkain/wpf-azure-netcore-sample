@@ -1,6 +1,6 @@
-﻿using TTMS.Common.Abstractions;
+﻿using Microsoft.ApplicationInsights;
+using TTMS.Common.Abstractions;
 using TTMS.Common.Logging;
-using TTMS.Common.Insights;
 using TTMS.Messaging.Config;
 using TTMS.Messaging.Producers;
 using TTMS.UI.Properties;
@@ -10,7 +10,6 @@ using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
 using MEL = Microsoft.Extensions.Logging;
-using Microsoft.ApplicationInsights;
 
 namespace TTMS.UI.Helpers
 {
@@ -27,8 +26,7 @@ namespace TTMS.UI.Helpers
                 OutgoingQueue = Settings.Default.OutgoingMessageQueue
             };
 
-            Container.RegisterSerilog("TTMS.UI", Settings.Default.LogLevel, Settings.Default.LogFile);
-            Container.RegisterTelemetry(Settings.Default.InstrumentationKey);
+            Container.RegisterLog("TTMS.UI", Settings.Default.LogLevel, Settings.Default.InstrumentationKey, Settings.Default.LogFile);
 
             Container.RegisterType(typeof(IMessageProducer<>), typeof(AzureServiceBusProducer<>),
                 new SingletonLifetimeManager(), new InjectionConstructor(typeof(MEL.ILogger),

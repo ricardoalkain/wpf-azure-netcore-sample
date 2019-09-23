@@ -34,12 +34,12 @@ namespace TTMS.Web.Api.Controllers
         }
 
         /// <summary>
-        /// Returns information about a
+        /// Returns information about a traveler
         /// </summary>
         /// <param name="id">Traveler's ID</param>
         /// <returns></returns>
         [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TravelerResponse), Description = "Information about the requested traveler")]
-        public async Task<IHttpActionResult> Get(Guid id)
+        public async Task<IHttpActionResult> GetById(Guid id)
         {
             var traveler = await service.GetByIdAsync(id).ConfigureAwait(false);
             return Ok(traveler.CreateResponse());

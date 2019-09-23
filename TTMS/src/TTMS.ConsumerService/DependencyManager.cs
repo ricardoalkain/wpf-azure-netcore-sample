@@ -1,10 +1,5 @@
-﻿using System;
-using Microsoft.ApplicationInsights;
-using Serilog;
-using Serilog.Events;
-using Serilog.Extensions.Logging;
+﻿using Microsoft.ApplicationInsights;
 using TTMS.Common.Abstractions;
-using TTMS.Common.Insights;
 using TTMS.Common.Logging;
 using TTMS.ConsumerService.Properties;
 using TTMS.Messaging.Config;
@@ -28,9 +23,7 @@ namespace TTMS.ConsumerService
                 IncomingQueue = Settings.Default.IncomingMessageQueue
             };
 
-            Container.RegisterSerilog("TTMS.local", Settings.Default.LogLevel, Settings.Default.LogFile);
-
-            Container.RegisterTelemetry(Settings.Default.InstrumentationKey);
+            Container.RegisterLog("TTMS.local", Settings.Default.LogLevel, Settings.Default.InstrumentationKey, Settings.Default.LogFile);
 
             Container.RegisterType<ITravelerWriter, TravelerHttpWriter>(
                 new InjectionConstructor(typeof(MEL.ILogger), Settings.Default.ApiUrl));
