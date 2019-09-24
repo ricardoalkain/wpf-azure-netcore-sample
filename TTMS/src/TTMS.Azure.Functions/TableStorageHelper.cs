@@ -11,31 +11,6 @@ namespace TTMS.Azure.Functions
 {
     public static class TableStorageHelper
     {
-        public static async Task<IEnumerable<TEntity>> ExecuteQueryAsync<TEntity>(
-            this CloudTable table, TableQuery<TEntity> tableQuery = null) where TEntity : TableEntity, new()
-        {
-            var continuationToken = default(TableContinuationToken);
-            var results = new List<TEntity>();
-            int remaining;
-            int total = 0;
-
-            do
-            {
-                var queryResult = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
-                results.AddRange(queryResult.Results);
-                continuationToken = queryResult.ContinuationToken;
-
-                if (total == 0)
-                {
-                    total = tableQuery.TakeCount.GetValueOrDefault();
-                }
-                remaining = total - results.Count;
-
-            } while (continuationToken != null && remaining > 0);
-
-            return results;
-        }
-
         #region Table Writer helper functions
 
         public static async Task<Traveler> CreateTravelerAsync(CloudTable table, Traveler traveler)

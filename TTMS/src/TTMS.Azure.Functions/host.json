@@ -3,7 +3,7 @@
 
     "extensions": {
         "http": {
-            "routePrefix": "api/v0.1/travelers"
+            "routePrefix": "api/v0.1"
         }
     }
 }

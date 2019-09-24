@@ -22,54 +22,81 @@ namespace TTMS.Azure.Functions
 
         [FunctionName(nameof(GetAllTravelersAsync))]
         public static async Task<IActionResult> GetAllTravelersAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "travelers")] HttpRequest req,
             [Table("traveler")]  CloudTable table,
             ILogger logger)
         {
-            logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(GetAllTravelersAsync));
+            try
+            {
+                logger.LogInformation("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(GetAllTravelersAsync));
 
-            var result = await table.ExecuteQueryAsync<Traveler>();
+                var result = await table.ExecuteQueryAsync<Traveler>();
 
-            return new OkObjectResult(result?.CreateResponse());
+                logger.LogDebug("Travelers found: {count}", result.Count());
+                return new OkObjectResult(result.CreateResponse());
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, ex.Message);
+                throw;
+            }
         }
 
         [FunctionName(nameof(GetTravelerByIdAsync))]
         public static async Task<IActionResult> GetTravelerByIdAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "{id}")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "travelers/{id:Guid}")] HttpRequest req,
          [Table("traveler")] CloudTable table,
-         Guid id,
+         string id,
          ILogger logger)
         {
-            logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(GetTravelerByIdAsync));
-
-            var query = new TableQuery<Traveler>().Where(
-                TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id.ToString()));
-
-            var result = (await table.ExecuteQueryAsync(query))?.FirstOrDefault();
-
-            if (result == null)
+            try
             {
-                return new NotFoundResult();
-            }
+                logger.LogDebug("{Class}.{Method}: {id}", nameof(TravelerHttpFunctions), nameof(GetTravelerByIdAsync), id);
 
-            return new OkObjectResult(result.CreateResponse());
+                var query = new TableQuery<Traveler>().Where(
+                    TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id));
+
+                var result = (await table.ExecuteQueryAsync(query))?.FirstOrDefault();
+
+                if (result == null)
+                {
+                    logger.LogWarning("No traveler found with ID {id}", id);
+                    return new NotFoundResult();
+                }
+
+                return new OkObjectResult(result.CreateResponse());
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, ex.Message);
+                throw;
+            }
         }
 
         [FunctionName(nameof(GetTravelerByTypeAsync))]
         public static async Task<IActionResult> GetTravelerByTypeAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "type/{type}")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "travelers/type/{type}")] HttpRequest req,
          [Table("traveler")] CloudTable table,
-         TravelerType travelerType,
+         string type,
          ILogger logger)
         {
-            logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(GetTravelerByTypeAsync));
+            try
+            {
+                logger.LogDebug("{Class}.{Method}: {type}", nameof(TravelerHttpFunctions), nameof(GetTravelerByTypeAsync), type);
 
-            var query = new TableQuery<Traveler>().Where(
-                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, travelerType.ToString()));
+                var query = new TableQuery<Traveler>().Where(
+                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, type));
 
-            var results = await table.ExecuteQueryAsync(query);
+                var results = await table.ExecuteQueryAsync(query);
 
-            return new OkObjectResult(results?.CreateResponse());
+                logger.LogDebug("Travelers found: {count}", results.Count());
+                return new OkObjectResult(results?.CreateResponse());
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, ex.Message);
+                throw;
+            }
         }
 
         #endregion
@@ -78,80 +105,118 @@ namespace TTMS.Azure.Functions
 
         [FunctionName(nameof(CreateTravelerAsync))]
         public static async Task<IActionResult> CreateTravelerAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "travelers")] HttpRequest req,
          [Table("traveler")] CloudTable table,
-         TravelerRequest traveler,
          ILogger logger)
         {
-            logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(CreateTravelerAsync));
-
-            if (traveler.Id == default)
+            try
             {
-                traveler.Id = Guid.NewGuid();
+                logger.LogInformation("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(CreateTravelerAsync));
+
+                var traveler = await req.DeserializeAsync<TravelerRequest>();
+
+                if (traveler.Id == default)
+                {
+                    traveler.Id = Guid.NewGuid();
+                }
+
+                var entity = traveler.ToEntity();
+                var operation = TableOperation.Insert(entity);
+                var results = await table.ExecuteAsync(operation);
+
+                logger.LogDebug("New traveler created: {@traveler}", traveler);
+
+                return new CreatedAtRouteResult(new { id = entity.RowKey }, entity.CreateResponse());
             }
-
-            var operation = TableOperation.Insert(traveler.ToEntity());
-            var results = await table.ExecuteAsync(operation);
-
-            return new CreatedAtRouteResult(new { id = traveler.Id }, traveler.ToEntity().CreateResponse());
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return new BadRequestObjectResult(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, ex.Message);
+                throw;
+            }
         }
 
         [FunctionName(nameof(UpdateTravelerAsync))]
         public static async Task<IActionResult> UpdateTravelerAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "{id:Guid}")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Function, "put", Route = "travelers/{id}")] HttpRequest req,
          [Table("traveler")] CloudTable table,
-         Guid id,
-         TravelerRequest traveler,
+         string id,
          ILogger logger)
         {
-            logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(UpdateTravelerAsync));
-
-            if (id != traveler.Id)
+            try
             {
-                var msg = "It's not allowed to change traveler ID.";
-                logger.LogWarning("BAD REQUEST: {msg} => {@Request}", msg, traveler);
-                return new BadRequestObjectResult(msg);
+                logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(UpdateTravelerAsync));
+
+                var entity = (await req.DeserializeAsync<TravelerRequest>()).ToEntity();
+
+                if (id != entity.RowKey)
+                {
+                    throw new ArgumentException("It's not allowed to change entity ID");
+                }
+
+                entity.ETag = "*";
+                var operation = TableOperation.Replace(entity);
+                var result = await table.ExecuteAsync(operation);
+
+                return new StatusCodeResult(result.HttpStatusCode);
             }
-
-            var entity = traveler.ToEntity();
-            entity.ETag = "*";
-            var operation = TableOperation.Replace(entity);
-            var result = await table.ExecuteAsync(operation);
-
-            if (result.HttpStatusCode == (int)HttpStatusCode.NotFound)
+            catch (ArgumentException ex)
             {
-                return new NotFoundResult();
+                logger.LogError(ex, ex.Message);
+                return new BadRequestObjectResult(ex.Message);
             }
-
-            return new OkResult();
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, ex.Message);
+                throw;
+            }
         }
 
         [FunctionName(nameof(DeleteTravelerAsync))]
         public static async Task<IActionResult> DeleteTravelerAsync(
-         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "{id:Guid}")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "travelers/{id}")] HttpRequest req,
          [Table("traveler")] CloudTable table,
-         Guid id,
+         string id,
          ILogger logger)
         {
-            logger.LogDebug("{Class}.{Method}", nameof(TravelerHttpFunctions), nameof(DeleteTravelerAsync));
-
-            var query = new TableQuery<Traveler>()
-                            .Where(TableQuery.GenerateFilterCondition(
-                                    nameof(Traveler.RowKey),
-                                    QueryComparisons.Equal,
-                                    id.ToString()));
-
-            var entityToDelete = (await table.ExecuteQueryAsync(query))?.FirstOrDefault();
-
-            if (entityToDelete == null)
+            try
             {
-                return new NotFoundResult();
+                logger.LogInformation("{Class}.{Method}: {id}", nameof(TravelerHttpFunctions), nameof(DeleteTravelerAsync), id);
+
+                var query = new TableQuery<Traveler>()
+                                .Where(TableQuery.GenerateFilterCondition(
+                                        nameof(Traveler.RowKey),
+                                        QueryComparisons.Equal,
+                                        id.ToString()));
+
+                var entityToDelete = (await table.ExecuteQueryAsync(query))?.FirstOrDefault();
+
+                if (entityToDelete == null)
+                {
+                    logger.LogWarning("No traveler found with ID {id}", id);
+                    return new NotFoundResult();
+                }
+
+                var operation = TableOperation.Delete(entityToDelete);
+                var result = await table.ExecuteAsync(operation);
+
+                logger.LogDebug("Traveler delete result: {statusCode}", result.HttpStatusCode);
+                return new StatusCodeResult(result.HttpStatusCode);
             }
-
-            var operation = TableOperation.Delete(entityToDelete);
-            await table.ExecuteAsync(operation);
-
-            return new OkResult();
+            catch (ArgumentException ex)
+            {
+                logger.LogError(ex, ex.Message);
+                return new BadRequestObjectResult(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, ex.Message);
+                throw;
+            }
         }
 
         #endregion
