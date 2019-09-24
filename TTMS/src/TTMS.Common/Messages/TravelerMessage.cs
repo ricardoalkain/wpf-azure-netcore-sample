@@ -1,6 +1,6 @@
 ﻿using TTMS.Common.Models;
 
-namespace TTMS.Messaging
+namespace TTMS.Common.Messages
 {
     public class TravelerMessage : BaseMessage<Traveler>
     {

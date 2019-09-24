@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Messages;
 using TTMS.Common.Models;
 
 namespace TTMS.Messaging.Producers

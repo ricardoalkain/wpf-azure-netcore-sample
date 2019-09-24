@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TTMS.Common.Abstractions;
-using TTMS.Common.DTO;
+using TTMS.Common.DTO.Extensions;
 using TTMS.Common.Models;
 
 namespace TTMS.Web.Client

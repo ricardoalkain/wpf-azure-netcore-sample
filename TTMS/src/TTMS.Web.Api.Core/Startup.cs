@@ -35,7 +35,7 @@ namespace TTMS.Web.Api.Core
 
             services.AddSwaggerGen(config =>
             {
-                config.SwaggerDoc("v1", new Info { Title = "TTMS v0.1 beta API", Version = "v1" });
+                config.SwaggerDoc("beta", new Info { Title = "TTMS v0.1 beta API", Version = "v0.1" });
                 config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 config.DescribeAllEnumsAsStrings();
 
@@ -53,16 +53,10 @@ namespace TTMS.Web.Api.Core
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseSwagger(c => c.RouteTemplate = "swagger/{documentName}/swagger.json");
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TTMS");
-            //});
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "");
+                c.SwaggerEndpoint("/swagger/beta/swagger.json", "");
             });
 
             app.UseSerilogRequestLogging(); // Better logging than ASP.NET Core

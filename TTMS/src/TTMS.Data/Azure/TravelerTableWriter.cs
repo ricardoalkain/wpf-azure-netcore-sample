@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Entities.Extensions;
 using TTMS.Common.Models;
-using TTMS.Data.Extensions;
+using Entities = TTMS.Common.Entities;
 
 namespace TTMS.Data.Azure
 {

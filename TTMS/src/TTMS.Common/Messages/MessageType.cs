@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TTMS.Messaging
+namespace TTMS.Common.Messages
 {
     public enum MessageType
     {

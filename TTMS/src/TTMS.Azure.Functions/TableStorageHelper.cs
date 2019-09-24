@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Table;
+using TTMS.Common.Entities;
+
+namespace TTMS.Azure.Functions
+{
+    public static class TableStorageHelper
+    {
+        public static async Task<IEnumerable<TEntity>> ExecuteQueryAsync<TEntity>(
+            this CloudTable table, TableQuery<TEntity> tableQuery = null) where TEntity : TableEntity, new()
+        {
+            var continuationToken = default(TableContinuationToken);
+            var results = new List<TEntity>();
+            int remaining;
+            int total = 0;
+
+            do
+            {
+                var queryResult = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
+                results.AddRange(queryResult.Results);
+                continuationToken = queryResult.ContinuationToken;
+
+                if (total == 0)
+                {
+                    total = tableQuery.TakeCount.GetValueOrDefault();
+                }
+                remaining = total - results.Count;
+
+            } while (continuationToken != null && remaining > 0);
+
+            return results;
+        }
+
+        #region Table Writer helper functions
+
+        public static async Task<Traveler> CreateTravelerAsync(CloudTable table, Traveler traveler)
+        {
+            if (string.IsNullOrEmpty(traveler.RowKey))
+            {
+                traveler.RowKey = Guid.NewGuid().ToString();
+            }
+
+            var operation = TableOperation.Insert(traveler);
+            await table.ExecuteAsync(operation);
+
+            return traveler;
+        }
+
+        public static async Task<TableResult> UpdateTravelerAsync(CloudTable table, Traveler traveler)
+        {
+            traveler.ETag = "*";
+            var operation = TableOperation.Replace(traveler);
+            return await table.ExecuteAsync(operation);
+        }
+
+        public static async Task<TableResult> DeleteTravelerAsync(CloudTable table, Guid id)
+        {
+            var query = new TableQuery<Traveler>()
+                            .Where(TableQuery.GenerateFilterCondition(
+                                    nameof(Traveler.RowKey),
+                                    QueryComparisons.Equal,
+                                    id.ToString()));
+
+            var entityToDelete = (await table.ExecuteQueryAsync(query))?.FirstOrDefault();
+
+            if (entityToDelete == null)
+            {
+                return new TableResult { HttpStatusCode = (int)HttpStatusCode.NotFound };
+            }
+
+            var operation = TableOperation.Delete(entityToDelete);
+            return await table.ExecuteAsync(operation);
+        }
+
+        #endregion
+    }
+}

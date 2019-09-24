@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TTMS.Common.Messages;
 
 namespace TTMS.Messaging.Producers
 {

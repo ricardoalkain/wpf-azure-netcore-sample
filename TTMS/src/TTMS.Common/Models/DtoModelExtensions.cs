@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TTMS.Common.Models;
 
-namespace TTMS.Common.DTO
+namespace TTMS.Common.DTO.Extensions
 {
-    public static class DTOExtensions
+    public static class DtoModelExtensions
     {
         public static TravelerRequest CreateRequest(this Traveler traveler)
         {
@@ -49,7 +49,7 @@ namespace TTMS.Common.DTO
             };
         }
 
-        public static IEnumerable<Traveler> CreateResponse(this IEnumerable<Traveler> travelers)
+        public static IEnumerable<TravelerResponse> CreateResponse(this IEnumerable<Traveler> travelers)
         {
             return travelers.Select(t => t.CreateResponse());
         }

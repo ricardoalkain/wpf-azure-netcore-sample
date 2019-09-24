@@ -11,7 +11,7 @@ namespace TTMS.Web.Client
 {
     public abstract class BaseTravelerHttpClient : BaseHttpClient
     {
-        protected const string defaultEndPoint = "beta/travelers";
+        protected const string defaultEndPoint = "api/v0.1/travelers";
         protected const string defaultMediaType = "application/json";
 
         public BaseTravelerHttpClient(ILogger logger, IConfiguration configuration) : base(logger, configuration)

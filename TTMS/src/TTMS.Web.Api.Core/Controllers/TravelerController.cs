@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using TTMS.Common.DTO;
+using TTMS.Common.DTO.Extensions;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
 using TTMS.Web.Api.Core.Services;
 
 namespace TTMS.Web.Api.Controllers
 {
-    [Route("beta/travelers")]
+    [Route("api/v0.1/travelers")]
     public class TravelerController : ControllerBase
     {
         private readonly ITravelerDbService service;

@@ -4,7 +4,7 @@ using System.Linq;
 using TTMS.Common.Enums;
 using Models = TTMS.Common.Models;
 
-namespace TTMS.Data.Extensions
+namespace TTMS.Common.Entities.Extensions
 {
     public static class EntityModelMappings
     {

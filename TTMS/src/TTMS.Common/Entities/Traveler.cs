@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.Storage.Table;
 using TTMS.Common.Enums;
 
-namespace TTMS.Data.Entities
+namespace TTMS.Common.Entities
 {
     public class Traveler : TableEntity
     {

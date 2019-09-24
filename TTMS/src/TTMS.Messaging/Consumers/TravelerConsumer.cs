@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Messages;
 using TTMS.Messaging.Config;
 
 namespace TTMS.Messaging.Consumers
