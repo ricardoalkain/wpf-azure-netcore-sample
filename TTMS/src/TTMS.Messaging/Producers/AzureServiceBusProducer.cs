@@ -14,16 +14,13 @@ namespace TTMS.Messaging.Producers
         private readonly ILogger logger;
         private readonly MessagingConfig config;
         private readonly IQueueClient queueClient;
-        private readonly TelemetryClient telemetryClient;
 
         public AzureServiceBusProducer(
             ILogger logger,
-            TelemetryClient telemetryClient,
             MessagingConfig config)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
-            this.telemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
 
             this.queueClient = new QueueClient(config.ServerConnection, config.OutgoingQueue);
         }
@@ -34,7 +31,7 @@ namespace TTMS.Messaging.Producers
             var payload = new Microsoft.Azure.ServiceBus.Message(Encoding.UTF8.GetBytes(json));
 
             await queueClient.SendAsync(payload).ConfigureAwait(false);
-            telemetryClient.TrackEvent($"Publish message to {config.OutgoingQueue}");
+            logger.LogInformation($"Publish message to {config.OutgoingQueue}");
         }
 
         public async Task PublishAsync(MessageType messageType, T content, Guid messageKey = default)
@@ -56,7 +53,6 @@ namespace TTMS.Messaging.Producers
 
         public void Dispose()
         {
-            telemetryClient.Flush();
             queueClient.CloseAsync();
         }
     }

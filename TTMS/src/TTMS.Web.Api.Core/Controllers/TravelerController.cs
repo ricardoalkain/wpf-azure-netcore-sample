@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.Swagger.Annotations;
+using Swashbuckle.AspNetCore.Annotations;
 using TTMS.Common.DTO;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
-using TTMS.Web.Api.Services;
+using TTMS.Web.Api.Core.Services;
 
 namespace TTMS.Web.Api.Controllers
 {
-    public class TravelerController : ApiController
+    [Route("beta/travelers")]
+    public class TravelerController : ControllerBase
     {
         private readonly ITravelerDbService service;
-        private readonly ILogger logger;
+        private readonly ILogger<TravelerController> logger;
 
-        public TravelerController(ILogger logger, ITravelerDbService travelerService)
+        public TravelerController(ILogger<TravelerController> logger, ITravelerDbService travelerService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.service = travelerService ?? throw new ArgumentNullException(nameof(travelerService));
@@ -26,8 +30,9 @@ namespace TTMS.Web.Api.Controllers
         /// Returns a list of travelers.
         /// </summary>
         /// <returns>List of travelers registered in the system</returns>
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(IEnumerable<TravelerResponse>), Description = "List of travelers in the system")]
-        public async Task<IHttpActionResult> Get()
+        //[SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IEnumerable<TravelerResponse>), Description = "List of travelers in the system")]
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             IEnumerable<Traveler> travelers = await service.GetAllAsync().ConfigureAwait(false);
             return Ok(travelers.CreateResponse());
@@ -38,10 +43,26 @@ namespace TTMS.Web.Api.Controllers
         /// </summary>
         /// <param name="id">Traveler's ID</param>
         /// <returns></returns>
-        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(TravelerResponse), Description = "Information about the requested traveler")]
-        public async Task<IHttpActionResult> GetById(Guid id)
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(TravelerResponse), Description = "Information about the requested traveler")]
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             var traveler = await service.GetByIdAsync(id).ConfigureAwait(false);
+            return traveler == null
+                    ? (IActionResult)NotFound()
+                    : Ok(traveler.CreateResponse());
+        }
+
+        /// <summary>
+        /// Returns a list of traveler of a specific type
+        /// </summary>
+        /// <param name="type">Traveler's type</param>
+        /// <returns></returns>
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(TravelerResponse), Description = "Information about the requested traveler")]
+        [HttpGet("type/{type}")]
+        public async Task<IActionResult> GetBytype(TravelerType type)
+        {
+            var traveler = await service.GetByTypeAsync(type).ConfigureAwait(false);
             return Ok(traveler.CreateResponse());
         }
 
@@ -50,8 +71,9 @@ namespace TTMS.Web.Api.Controllers
         /// </summary>
         /// <param name="traveler">Information about the new traveler</param>
         /// <returns>Traveler created</returns>
-        [SwaggerResponse(HttpStatusCode.Created, Type = typeof(TravelerResponse), Description = "Registers a new traveler")]
-        public async Task<IHttpActionResult> Post([FromBody]TravelerRequest traveler)
+        [SwaggerResponse((int)HttpStatusCode.Created, Type = typeof(TravelerResponse), Description = "Registers a new traveler")]
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]TravelerRequest traveler)
         {
             var newTraveler = await service.CreateAsync(traveler.ToModel()).ConfigureAwait(false);
             var response = newTraveler.CreateResponse();
@@ -64,8 +86,9 @@ namespace TTMS.Web.Api.Controllers
         /// </summary>
         /// <param name="id">ID identifying the traveler to be updated</param>
         /// <param name="traveler">Traveler's data</param>
-        [SwaggerResponse(HttpStatusCode.OK, Description = "Updates a traveler's data")]
-        public async Task<IHttpActionResult> Put(Guid id, [FromBody]TravelerRequest traveler)
+        [SwaggerResponse((int)HttpStatusCode.OK, Description = "Updates a traveler's data")]
+        [HttpPut("{id:Guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody]TravelerRequest traveler)
         {
             if (id != traveler.Id)
             {
@@ -83,8 +106,9 @@ namespace TTMS.Web.Api.Controllers
         /// Removes a traveler from the database
         /// </summary>
         /// <param name="id">ID of the traveler to be removed</param>
-        [SwaggerResponse(HttpStatusCode.OK, Description = "Removes a traveler")]
-        public async Task<IHttpActionResult> Delete(Guid id)
+        [SwaggerResponse((int)HttpStatusCode.OK, Description = "Removes a traveler")]
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             await service.DeleteAsync(id).ConfigureAwait(false);
 

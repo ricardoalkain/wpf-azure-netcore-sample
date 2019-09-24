@@ -1,42 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Polly;
-using Polly.Retry;
 using TTMS.Common.Abstractions;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
 
 namespace TTMS.Web.Client
 {
-    public class TravelerHttpReader : ITravelerReader
+    public class TravelerHttpReader : BaseTravelerHttpClient, ITravelerReader
     {
-        private const string defaultEndPoint = "beta/traveler";
-
-        private readonly HttpClient httpclient;
-        private readonly AsyncRetryPolicy retryPolicy;
-        private readonly ILogger logger;
-
-        public TravelerHttpReader(ILogger logger, string apiUrl)
+        public TravelerHttpReader(ILogger logger, IConfiguration configuration) : base(logger, configuration)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            if (string.IsNullOrEmpty(apiUrl))
-            {
-                throw new ArgumentNullException(nameof(apiUrl));
-            }
-
-            httpclient = new HttpClientFactory().CreateClient(apiUrl);
-
-            retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                retryCount: 3,
-                sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
-                onRetry: (exception, calculareDuration) =>
-                {
-                    logger.LogError(exception, "ERROR reading from API");
-                });
         }
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()

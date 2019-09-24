@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
 
-namespace TTMS.Web.Api.Services
+namespace TTMS.Web.Api.Core.Services
 {
     public class TravelerDbService : ITravelerDbService
     {
@@ -13,7 +14,7 @@ namespace TTMS.Web.Api.Services
         private readonly ITravelerReader reader;
         private readonly ITravelerWriter writer;
 
-        public TravelerDbService(ILogger logger, ITravelerReader reader, ITravelerWriter writer)
+        public TravelerDbService(ILogger<TravelerDbService> logger, ITravelerReader reader, ITravelerWriter writer)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
@@ -45,6 +46,12 @@ namespace TTMS.Web.Api.Services
         public async Task<Traveler> GetByIdAsync(Guid key)
         {
             var traveler = await reader.GetByIdAsync(key).ConfigureAwait(false);
+            return traveler;
+        }
+
+        public async Task<IEnumerable<Traveler>> GetByTypeAsync(TravelerType travelerType)
+        {
+            var traveler = await reader.GetByTypeAsync(travelerType).ConfigureAwait(false);
             return traveler;
         }
 

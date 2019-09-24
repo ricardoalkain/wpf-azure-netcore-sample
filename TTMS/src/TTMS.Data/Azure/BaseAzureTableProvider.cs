@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -9,25 +10,25 @@ namespace TTMS.Data.Azure
 {
     public abstract class BaseAzureTableProvider<TKey, TEntity> where TEntity : TableEntity, new()
     {
-        private readonly ILogger logger;
+        protected readonly ILogger logger;
         protected CloudTable table;
 
-        public BaseAzureTableProvider(ILogger logger, string tableName, string connectionString)
+        public BaseAzureTableProvider(ILogger logger, string tableName, IConfiguration configuration)
         {
             if (string.IsNullOrEmpty(tableName))
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
 
-            if (string.IsNullOrEmpty(connectionString))
+            if (configuration == null)
             {
-                throw new ArgumentNullException(nameof(connectionString));
+                throw new ArgumentNullException(nameof(configuration));
             }
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             logger.LogInformation("Initializing Azure Cloud Table client...");
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(configuration["DbConnectionString"]);
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
             table = tableClient.GetTableReference(tableName);
@@ -60,11 +61,11 @@ namespace TTMS.Data.Azure
 
                 if (total == 0)
                 {
-                    total = tableQuery.TakeCount.GetValueOrDefault();
+                    total = tableQuery.TakeCount.GetValueOrDefault(results.Count);
                 }
                 remaining = total - results.Count;
 
-                logger.LogDebug("Fetched {Current} from {Total}", results.Count, total);
+                logger.LogDebug("Fetched {Current}/{Total}", results.Count, total);
 
             } while (continuationToken != null && remaining > 0);
 

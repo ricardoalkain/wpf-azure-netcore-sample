@@ -1,11 +1,8 @@
 ﻿using System;
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
-using Serilog;
-using Serilog.Events;
-using Serilog.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Unity;
 
 namespace TTMS.Common.Logging
@@ -33,10 +30,7 @@ namespace TTMS.Common.Logging
             telemetryConfig.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());
 
 
-            var telemetryClient = new TelemetryClient(telemetryConfig)
-            {
-                InstrumentationKey = instrumentationKey
-            };
+            var telemetryClient = new TelemetryClient(telemetryConfig);
 
             var dependencyModule = new DependencyTrackingTelemetryModule();
 

@@ -2,43 +2,19 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Polly;
-using Polly.Retry;
 using TTMS.Common.Abstractions;
 using TTMS.Common.DTO;
 using TTMS.Common.Models;
 
 namespace TTMS.Web.Client
 {
-    public class TravelerHttpWriter : ITravelerWriter
+    public class TravelerHttpWriter : BaseTravelerHttpClient, ITravelerWriter
     {
-        private const string defaultEndPoint = "beta/traveler";
-        private const string defaultMediaType = "application/json";
-
-        private readonly HttpClient httpclient;
-        private readonly AsyncRetryPolicy retryPolicy;
-        private readonly ILogger logger;
-
-        public TravelerHttpWriter(ILogger logger, string apiUrl)
+        public TravelerHttpWriter(ILogger logger, IConfiguration configuration) : base(logger, configuration)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            if (string.IsNullOrEmpty(apiUrl))
-            {
-                throw new ArgumentNullException(nameof(apiUrl));
-            }
-
-            httpclient = new HttpClientFactory().CreateClient(apiUrl);
-
-            retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
-                retryCount: 3,
-                sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
-                onRetry: (exception, duration) =>
-                {
-                    logger.LogError(exception, "ERROR: {Message}", exception.Message);
-                });
         }
 
         public async Task DeleteAsync(Guid id)

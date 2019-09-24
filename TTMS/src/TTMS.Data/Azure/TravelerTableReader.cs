@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using TTMS.Common.Abstractions;
@@ -13,11 +14,9 @@ namespace TTMS.Data.Azure
 {
     public class TravelerTableReader : BaseAzureTableProvider<Guid, Entities.Traveler>, ITravelerReader
     {
-        private readonly ILogger logger;
-
-        public TravelerTableReader(ILogger logger, string connectionString) : base(logger, nameof(Traveler), connectionString)
+        public TravelerTableReader(ILogger<TravelerTableReader> logger, IConfiguration configuration)
+            : base(logger, nameof(Traveler), configuration)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<Traveler>> GetAllAsync()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using TTMS.Common.Abstractions;
@@ -13,11 +14,9 @@ namespace TTMS.Data.Azure
 {
     public class TravelerTableWriter : BaseAzureTableProvider<Guid, Entities.Traveler>, ITravelerWriter
     {
-        private readonly ILogger logger;
-
-        public TravelerTableWriter(ILogger logger, string connectionString) : base(logger, nameof(Traveler), connectionString)
+        public TravelerTableWriter(ILogger<TravelerTableWriter> logger, IConfiguration configuration)
+            : base(logger, nameof(Traveler), configuration)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Traveler> CreateAsync(Traveler traveler)

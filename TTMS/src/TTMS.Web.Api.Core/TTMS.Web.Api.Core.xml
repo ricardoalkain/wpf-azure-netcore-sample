@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TTMS.Web.Api.Core</name>
+    </assembly>
+    <members>
+        <member name="M:TTMS.Web.Api.Controllers.TravelerController.Get">
+            <summary>
+            Returns a list of travelers.
+            </summary>
+            <returns>List of travelers registered in the system</returns>
+        </member>
+        <member name="M:TTMS.Web.Api.Controllers.TravelerController.GetById(System.Guid)">
+            <summary>
+            Returns information about a traveler
+            </summary>
+            <param name="id">Traveler's ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:TTMS.Web.Api.Controllers.TravelerController.GetBytype(TTMS.Common.Enums.TravelerType)">
+            <summary>
+            Returns a list of traveler of a specific type
+            </summary>
+            <param name="type">Traveler's type</param>
+            <returns></returns>
+        </member>
+        <member name="M:TTMS.Web.Api.Controllers.TravelerController.Post(TTMS.Common.DTO.TravelerRequest)">
+            <summary>
+            Registers a new traveler
+            </summary>
+            <param name="traveler">Information about the new traveler</param>
+            <returns>Traveler created</returns>
+        </member>
+        <member name="M:TTMS.Web.Api.Controllers.TravelerController.Put(System.Guid,TTMS.Common.DTO.TravelerRequest)">
+            <summary>
+            Upates information about a traveler
+            </summary>
+            <param name="id">ID identifying the traveler to be updated</param>
+            <param name="traveler">Traveler's data</param>
+        </member>
+        <member name="M:TTMS.Web.Api.Controllers.TravelerController.Delete(System.Guid)">
+            <summary>
+            Removes a traveler from the database
+            </summary>
+            <param name="id">ID of the traveler to be removed</param>
+        </member>
+    </members>
+</doc>
