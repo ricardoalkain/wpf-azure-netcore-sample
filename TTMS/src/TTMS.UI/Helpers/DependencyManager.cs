@@ -29,8 +29,8 @@ namespace TTMS.UI.Helpers
             Container.RegisterLog("TTMS.UI", Settings.Default.LogLevel, Settings.Default.InstrumentationKey, Settings.Default.LogFile);
 
             Container.RegisterType(typeof(IMessageProducer<>), typeof(AzureServiceBusProducer<>),
-                new SingletonLifetimeManager(), new InjectionConstructor(typeof(MEL.ILogger),
-                typeof(TelemetryClient), msgConfig)); // Pubilhes to Service Bus
+                new SingletonLifetimeManager(),
+                new InjectionConstructor(typeof(MEL.ILogger), msgConfig)); // Service Bus producer
 
             Container.RegisterType<ITravelerReader, TravelerHttpReader>(
                 new InjectionConstructor(typeof(MEL.ILogger), apiUrl)); // Read from API

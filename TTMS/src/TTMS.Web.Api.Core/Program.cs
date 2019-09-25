@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Events;
 
 namespace TTMS.Web.Api.Core
 {

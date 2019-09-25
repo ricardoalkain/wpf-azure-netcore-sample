@@ -32,7 +32,7 @@ namespace TTMS.Messaging.Producers
             var payload = new Microsoft.Azure.ServiceBus.Message(Encoding.UTF8.GetBytes(json));
 
             await queueClient.SendAsync(payload).ConfigureAwait(false);
-            logger.LogInformation($"Publish message to {config.OutgoingQueue}");
+            logger.LogInformation($"Message published to {config.OutgoingQueue}");
         }
 
         public async Task PublishAsync(MessageType messageType, T content, Guid messageKey = default)
