@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +7,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
+using TTMS.Common.DTO;
 using TTMS.Common.DTO.Extensions;
-using TTMS.Common.Enums;
 using TTMS.Common.Entities;
 using TTMS.Common.Entities.Extensions;
-using TTMS.Common.DTO;
 
 namespace TTMS.Azure.Functions
 {

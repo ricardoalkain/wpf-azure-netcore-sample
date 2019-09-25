@@ -33,15 +33,16 @@ namespace TTMS.Web.Api.Core
             services.AddSingleton<ITravelerWriter, TravelerTableWriter>();
             services.AddTransient<ITravelerDbService, TravelerDbService>();
 
+            services.AddApplicationInsightsTelemetry();
+
             services.AddSwaggerGen(config =>
             {
                 config.SwaggerDoc("beta", new Info { Title = "TTMS v0.1 beta API", Version = "v0.1" });
                 config.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 config.DescribeAllEnumsAsStrings();
 
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //config.IncludeXmlComments(xmlPath);
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                config.IncludeXmlComments(xmlFile);
             });
         }
 
@@ -59,7 +60,7 @@ namespace TTMS.Web.Api.Core
                 c.SwaggerEndpoint("/swagger/beta/swagger.json", "");
             });
 
-            app.UseSerilogRequestLogging(); // Better logging than ASP.NET Core
+            //app.UseSerilogRequestLogging(); // Better logging than ASP.NET Core
 
             app.UseMvc();
         }

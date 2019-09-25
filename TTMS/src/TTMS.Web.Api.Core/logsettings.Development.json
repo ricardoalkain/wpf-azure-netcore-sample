@@ -1,35 +1,26 @@
 {
-  "Serilog": {
-    "Using": [
-      "Serilog.Sinks.ApplicationInsights",
-      "Serilog.Sinks.RollingFile",
-      "Serilog.Sinks.Console"
-    ],
-    "MinimumLevel": {
-      "Default": "Debug",
-      "Override": {
-        "Microsoft": "Warning",
-        "System": "Warning"
-      }
-    },
-    "WriteTo": [
-      {
-        "Name": "Console"
-      },
-      {
-        "Name": "RollingFile",
-        "Args": { "path": "C:\\Temp\\TTMS\\Logs\\ttms.api-{Date}.log" }
-      },
-      {
-        "Name": "ApplicationInsights",
-        "Args": {
-          "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
-        }
-      }
-    ],
-    "Enrich": [ "FromLogContext" ],
-    "Properties": {
-      "Application": "TTMS.Web.Api.Core"
+    "Serilog": {
+
+        "Using": [ "Serilog.Sinks.ApplicationInsights" ],
+
+        "MinimumLevel": {
+            "Default": "Debug"
+        },
+
+        "WriteTo": [
+            {
+                "Name": "ApplicationInsights",
+                "Args": {
+                    "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
+                }
+            },
+            {
+                "Name": "File",
+                "Args": {
+                    "path": "C:\\Temp\\TTMS\\Logs\\ttms.api.log",
+                    "rollOnFileSizeLimit": true
+                }
+            }
+        ]
     }
-  }
 }

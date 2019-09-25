@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 
 namespace TTMS.Web.Api.Core
 {
@@ -15,10 +13,13 @@ namespace TTMS.Web.Api.Core
     {
         public static void Main(string[] args)
         {
+            // Configure log/telemtry first to catch every information possible
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
             var logConfig = new ConfigurationBuilder()
                                 .SetBasePath(Directory.GetCurrentDirectory())
-                                .AddJsonFile("logsettings.json")
-                                .AddJsonFile("logsettings.Development.json")
+                                .AddJsonFile("logsettings.json", optional: true)
+                                .AddJsonFile($"logsettings.{env}.json", optional: true)
                                 .Build();
 
             Log.Logger = new LoggerConfiguration()
@@ -45,7 +46,6 @@ namespace TTMS.Web.Api.Core
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                //.UseApplicationInsights()
                 .UseSerilog()
                 .UseStartup<Startup>();
     }
