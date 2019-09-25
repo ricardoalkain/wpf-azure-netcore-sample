@@ -15,6 +15,10 @@ namespace TTMS.Web.Client
         {
         }
 
+        public TravelerHttpReader(ILogger logger, string apiUrl) : base(logger, apiUrl)
+        {
+        }
+
         public async Task<IEnumerable<Traveler>> GetAllAsync()
         {
             logger.LogDebug("{Method}", nameof(GetAllAsync));

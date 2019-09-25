@@ -17,6 +17,10 @@ namespace TTMS.Web.Client
         {
         }
 
+        public TravelerHttpWriter(ILogger logger, string apiUrl) : base(logger, apiUrl)
+        {
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             logger.LogDebug("{Method} => {id}", nameof(DeleteAsync), id);

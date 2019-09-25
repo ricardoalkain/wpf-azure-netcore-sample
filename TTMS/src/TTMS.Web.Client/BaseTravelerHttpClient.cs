@@ -17,5 +17,9 @@ namespace TTMS.Web.Client
         public BaseTravelerHttpClient(ILogger logger, IConfiguration configuration) : base(logger, configuration)
         {
         }
+
+        public BaseTravelerHttpClient(ILogger logger, string apiUrl) : base(logger, apiUrl)
+        {
+        }
     }
 }

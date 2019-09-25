@@ -14,22 +14,24 @@ namespace TTMS.Web.Client
         protected readonly AsyncRetryPolicy retryPolicy;
         protected readonly string ApiUrl;
 
-        public BaseHttpClient(ILogger logger, IConfiguration configuration)
+        public BaseHttpClient(ILogger logger, IConfiguration configuration) : this(logger, configuration["ApiUrl"])
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
+        }
 
-            ApiUrl = configuration["ApiUrl"];
+        public BaseHttpClient(ILogger logger, string apiUrl)
+        {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            if (string.IsNullOrEmpty(ApiUrl))
+            if (string.IsNullOrEmpty(apiUrl))
             {
                 throw new ArgumentNullException(nameof(ApiUrl));
             }
 
+            ApiUrl = apiUrl;
             httpclient = new HttpClientFactory().CreateClient(ApiUrl);
 
             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
