@@ -11,7 +11,7 @@ namespace TTMS.UI
     {
         public void ApplicationExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Application.Current.MainWindow, e.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             Log.Logger.Error(e.Exception, "Unhandled exception");
             e.Handled = true;
         }

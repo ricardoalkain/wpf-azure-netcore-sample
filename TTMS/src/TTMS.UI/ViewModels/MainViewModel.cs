@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Serilog;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
 using TTMS.UI.Helpers;
 using TTMS.UI.Services;
@@ -12,21 +13,30 @@ namespace TTMS.UI.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private readonly ITravelerService travelerService;
+        private readonly IMessageBoxService messageBox;
         private Traveler selectedTraveler;
         private IEnumerable<Traveler> travelersList;
         private EditViewModel editView;
         private bool isEnabled = true;
+        private bool isListLoading = true;
+        private bool isViewLoading = true;
+        private TravelerType filterByType;
 
         public RelayCommand NewTravelerCmd { get; private set; }
+
         public RelayCommand EditTravelerCmd { get; private set; }
+
+        public RelayCommand DeleteTravelerCmd { get; private set; }
 
         public MainViewModel()
         {
+            messageBox = DependencyManager.Container.Resolve<IMessageBoxService>();
             travelerService = DependencyManager.Container.Resolve<ITravelerService>();
             editView = DependencyManager.Container.Resolve<EditViewModel>();
 
             NewTravelerCmd = new RelayCommand(NewTraveler);
             EditTravelerCmd = new RelayCommand(EditTraveler);
+            DeleteTravelerCmd = new RelayCommand(DeleteTraveler);
             editView.OnCancel += EditCancelled;
             editView.OnSave += EditCommitted;
         }
@@ -43,6 +53,18 @@ namespace TTMS.UI.ViewModels
             set => SetProperty(ref isEnabled, value);
         }
 
+        public bool IsListLoading
+        {
+            get => isListLoading;
+            set => SetProperty(ref isListLoading, value);
+        }
+
+        public bool IsViewLoading
+        {
+            get => isViewLoading;
+            set => SetProperty(ref isViewLoading, value);
+        }
+
         public IEnumerable<Traveler> TravelersList
         {
             get => travelersList;
@@ -55,7 +77,24 @@ namespace TTMS.UI.ViewModels
             set
             {
                 SetProperty(ref selectedTraveler, value);
-                editView.ShowTraveler(value?.Id ?? default);
+                LoadTraveler(value?.Id ?? default);
+            }
+        }
+
+        public TravelerType FilterByType
+        {
+            get => filterByType;
+            set
+            {
+                SetProperty(ref filterByType, value);
+                if (value == TravelerType.None)
+                {
+                    RefreshData();
+                }
+                else
+                {
+                    RefreshData(value);
+                }
             }
         }
 
@@ -69,6 +108,7 @@ namespace TTMS.UI.ViewModels
         {
             Log.Logger.Information("Refreshing Travelers list");
 
+            IsListLoading = true;
             var list = (await travelerService.GetAllAsync()).OrderByDescending(t => t.Type).ToList();
 
             var traveler = list.FirstOrDefault(t => t.Id.Equals(id));
@@ -80,6 +120,37 @@ namespace TTMS.UI.ViewModels
 
             SelectedTraveler = traveler;
             TravelersList = list;
+            IsListLoading = false;
+        }
+
+        public async void RefreshData(TravelerType type)
+        {
+            Log.Logger.Information("Refreshing Travelers list");
+
+            IsListLoading = true;
+            var list = (await travelerService.GetByTypeAsync(type)).OrderByDescending(t => t.Type).ToList();
+
+            var id = SelectedTraveler?.Id ?? default;
+            var traveler = list.FirstOrDefault(t => t.Id.Equals(id));
+
+            if (traveler == null)
+            {
+                traveler = list.FirstOrDefault();
+            }
+
+            SelectedTraveler = traveler;
+            TravelersList = list;
+            IsListLoading = false;
+        }
+
+        public async void LoadTraveler(Guid id)
+        {
+            Log.Logger.Information("Loading Traveler Details: ID {id}", id);
+
+            IsViewLoading = true;
+            var traveler = await travelerService.GetByIdAsync(id);
+            editView.ShowTraveler(traveler);
+            IsViewLoading = false;
         }
 
         private void EditTraveler()
@@ -95,19 +166,60 @@ namespace TTMS.UI.ViewModels
             IsEnabled = false;
             editView.NewTraverler();
         }
+        private async void DeleteTraveler()
+        {
+            if (!messageBox.Confirm("Are you sure you want to delete this record?"))
+            {
+                return;
+            }
 
-        private void EditCommitted()
+            Log.Logger.Debug("Deleting traveler...");
+            try
+            {
+                IsListLoading = true;
+
+                await travelerService.DeleteAsync(SelectedTraveler.Id).ConfigureAwait(false);
+                RefreshData();
+            }
+            finally
+            {
+                IsListLoading = false;
+            }
+        }
+
+        private async void EditCommitted()
         {
             Log.Logger.Debug("Traveler editing committed");
-            IsEnabled = true;
-            RefreshData(editView.Id);
+
+            try
+            {
+                IsViewLoading = true;
+                var traveler = editView.GetTraveler();
+
+                if (traveler.Id == default)
+                {
+                    await travelerService.CreateAsync(traveler).ConfigureAwait(false);
+                }
+                else
+                {
+                    await travelerService.UpdateAsync(traveler).ConfigureAwait(false);
+                }
+
+                RefreshData(traveler.Id);
+            }
+            finally
+            {
+                IsEnabled = true;
+                IsViewLoading = false;
+            }
         }
 
         private void EditCancelled()
         {
             Log.Logger.Debug("Traveler editing cancelled");
+            editView.ShowTraveler(SelectedTraveler);
             IsEnabled = true;
-            editView.ShowTraveler(SelectedTraveler.Id);
         }
     }
 }
+

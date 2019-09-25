@@ -1,31 +1,23 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
 using Microsoft.Win32;
-using TTMS.Common.Abstractions;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
 using TTMS.UI.Helpers;
-using TTMS.UI.Services;
-using Unity;
 
 namespace TTMS.UI.ViewModels
 {
     public class EditViewModel : BaseViewModel
     {
-        private readonly ITravelerService travelerService;
-
         private bool isEditing;
+        private Traveler undoTraveler = null;
 
         public event Action OnSave = delegate { };
         public event Action OnCancel = delegate { };
 
         public EditViewModel()
         {
-            travelerService = DependencyManager.Container.Resolve<ITravelerService>();
-
             CancelCommand = new RelayCommand(Cancel);
             SaveCommand = new RelayCommand(SaveData);
             LoadPictureCommand = new RelayCommand(LoadPictureFromFile);
@@ -81,8 +73,8 @@ namespace TTMS.UI.ViewModels
             set => SetProperty(ref picture, value);
         }
 
-        private DateTime birthdate;
-        public DateTime BirthDate
+        private DateTime? birthdate;
+        public DateTime? BirthDate
         {
             get => birthdate;
             set => SetProperty(ref birthdate, value);
@@ -146,33 +138,16 @@ namespace TTMS.UI.ViewModels
 
         #endregion
 
-        public async void ShowTraveler(Guid id)
-        {
-            await LoadData(id);
-        }
-
         public void NewTraverler()
         {
-            this.Id = Guid.NewGuid();
-            this.Name = default;
-            this.Alias = default;
-            this.Skills = default;
-            this.Picture = default;
-            this.BirthDate = default;
-            this.BirthTimelineId = default;
-            this.BirthLocation = default;
-            this.LastDateTime = DateTime.Now;
-            this.LastTimelineId = 1;
-            this.LastLocation = default;
-            this.Type = default;
-            this.Status = TravelerStatus.Active;
-            this.DeviceModel = DeviceModel.Unknown;
-
+            SaveState();
+            ClearForm();
             IsEditing = true;
         }
 
         public void EditTraverler()
         {
+            SaveState();
             IsEditing = true;
         }
 
@@ -201,64 +176,100 @@ namespace TTMS.UI.ViewModels
             }
         }
 
-        private async Task LoadData(Guid id)
+        public void ShowTraveler(Traveler traveler)
         {
-            var traveler = await travelerService.GetByIdAsync(id).ConfigureAwait(false);
-
-            this.Id = traveler?.Id ?? id;
-            this.Name = traveler?.Name;
-            this.Alias = traveler?.Alias;
-            this.Skills = traveler?.Skills;
-            this.Picture = traveler?.Picture;
-            this.BirthDate = traveler?.BirthDate ?? default;
-            this.BirthTimelineId = traveler?.BirthTimelineId ?? 1;
-            this.BirthLocation = traveler?.BirthLocation;
-            this.LastDateTime = traveler?.LastDateTime ?? default;
-            this.LastTimelineId = traveler?.LastTimelineId ?? 1;
-            this.LastLocation = traveler?.LastLocation;
-            this.Type = traveler?.Type ?? default;
-            this.Status = traveler?.Status ?? default;
-            this.DeviceModel = traveler?.DeviceModel ?? default;
-        }
-
-        private async void SaveData()
-        {
-            var traveler = new Traveler
+            if (traveler == null)
             {
-                Id = this.Id,
-                Name = this.Name,
-                Alias = this.Alias,
-                Skills = this.Skills,
-                Picture = this.Picture,
-                BirthDate = this.BirthDate,
-                BirthTimelineId = this.BirthTimelineId,
-                BirthLocation = this.BirthLocation,
-                LastDateTime = this.LastDateTime,
-                LastTimelineId = this.LastTimelineId,
-                LastLocation = this.LastLocation,
-                Type = this.Type,
-                Status = this.Status,
-                DeviceModel = this.DeviceModel
-            };
-
-            if (traveler.Id == default)
-            {
-                await travelerService.CreateAsync(traveler).ConfigureAwait(false);
+                ClearForm();
             }
             else
             {
-                await travelerService.UpdateAsync(traveler).ConfigureAwait(false);
+                this.Id = traveler.Id;
+                this.Name = traveler.Name;
+                this.Alias = traveler.Alias;
+                this.Skills = traveler.Skills;
+                this.Picture = traveler.Picture;
+                this.BirthDate = traveler.BirthDate;
+                this.BirthTimelineId = traveler.BirthTimelineId;
+                this.BirthLocation = traveler.BirthLocation;
+                this.LastDateTime = traveler.LastDateTime;
+                this.LastTimelineId = traveler.LastTimelineId;
+                this.LastLocation = traveler.LastLocation;
+                this.Type = traveler.Type;
+                this.Status = traveler.Status;
+                this.DeviceModel = traveler.DeviceModel;
             }
+        }
 
+        public Traveler GetTraveler()
+        {
+            var traveler = new Traveler();
+            UpdateTraveler(traveler);
+            return traveler;
+        }
+
+        public void UpdateTraveler(Traveler traveler)
+        {
+            traveler.Id = this.Id;
+            traveler.Name = this.Name;
+            traveler.Alias = this.Alias;
+            traveler.Skills = this.Skills;
+            traveler.Picture = this.Picture;
+            traveler.BirthDate = this.BirthDate.GetValueOrDefault();
+            traveler.BirthTimelineId = this.BirthTimelineId;
+            traveler.BirthLocation = this.BirthLocation;
+            traveler.LastDateTime = this.LastDateTime;
+            traveler.LastTimelineId = this.LastTimelineId;
+            traveler.LastLocation = this.LastLocation;
+            traveler.Type = this.Type;
+            traveler.Status = this.Status;
+            traveler.DeviceModel = this.DeviceModel;
+        }
+
+        private void SaveData()
+        {
             IsEditing = false;
             OnSave();
         }
 
-        private async void Cancel()
+        private void Cancel()
         {
-            await LoadData(Id);
+            UndoChanges();
             IsEditing = false;
             OnCancel();
+        }
+
+        private void SaveState()
+        {
+            if (undoTraveler == null)
+            {
+                undoTraveler = new Traveler();
+            }
+
+            UpdateTraveler(undoTraveler);
+        }
+
+        private void UndoChanges()
+        {
+            ShowTraveler(undoTraveler);
+        }
+
+        private void ClearForm()
+        {
+            this.Id = Guid.NewGuid();
+            this.Name = default;
+            this.Alias = default;
+            this.Skills = default;
+            this.Picture = default;
+            this.BirthDate = default;
+            this.BirthTimelineId = default;
+            this.BirthLocation = default;
+            this.LastDateTime = DateTime.Now;
+            this.LastTimelineId = 1;
+            this.LastLocation = default;
+            this.Type = default;
+            this.Status = TravelerStatus.Active;
+            this.DeviceModel = DeviceModel.Unknown;
         }
     }
 }

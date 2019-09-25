@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TTMS.Common.Abstractions;
+using TTMS.Common.Enums;
 using TTMS.Common.Models;
 
 namespace TTMS.UI.Services
@@ -40,6 +41,11 @@ namespace TTMS.UI.Services
         public async Task UpdateAsync(Traveler traveler)
         {
             await writer.UpdateAsync(traveler);
+        }
+
+        public async Task<IEnumerable<Traveler>> GetByTypeAsync(TravelerType type)
+        {
+            return await reader.GetByTypeAsync(type).ConfigureAwait(false);
         }
     }
 }

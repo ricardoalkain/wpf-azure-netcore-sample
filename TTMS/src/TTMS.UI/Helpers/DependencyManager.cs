@@ -38,6 +38,8 @@ namespace TTMS.UI.Helpers
             Container.RegisterType<ITravelerWriter, TravelerMessageWriter>(); // Write to Message Bus
 
             Container.RegisterType<ITravelerService, TravelerService>();
+
+            Container.RegisterType<IMessageBoxService, MessageBoxService>();
         }
 
         public static IUnityContainer Container { get; }

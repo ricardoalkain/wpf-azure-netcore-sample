@@ -36,7 +36,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TextBox">
                                         <Border BorderBrush="LightGray" BorderThickness="1">
-                                            <TextBlock Text="{TemplateBinding Text}" Padding="4,2"/>
+                                            <TextBlock Text="{TemplateBinding Text}" Padding="4,2" TextWrapping="Wrap"/>
                                         </Border>
                                    </ControlTemplate>
                                 </Setter.Value>
