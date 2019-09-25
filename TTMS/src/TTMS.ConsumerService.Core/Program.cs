@@ -16,10 +16,12 @@ namespace TTMS.ConsumerService.Core
     {
         static void Main(string[] args)
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
             var logConfig = new ConfigurationBuilder()
                                 .SetBasePath(Directory.GetCurrentDirectory())
-                                .AddJsonFile("logsettings.json")
-                                .AddJsonFile("logsettings.Development.json", optional: true)
+                                .AddJsonFile("logsettings.json", optional: true)
+                                .AddJsonFile($"logsettings.{env}.json", optional: true)
                                 .Build();
 
             Log.Logger = new LoggerConfiguration()
@@ -30,8 +32,8 @@ namespace TTMS.ConsumerService.Core
             {
                 var configuration = new ConfigurationBuilder()
                                     .SetBasePath(Directory.GetCurrentDirectory())
-                                    .AddJsonFile("appsettings.json")
-                                    .AddJsonFile("appsettings.Development.json", optional: true)
+                                    .AddJsonFile("appsettings.json", optional: true)
+                                    .AddJsonFile($"appsettings.{env}.json", optional: true)
                                     .Build();
 
                 var services = new ServiceCollection();

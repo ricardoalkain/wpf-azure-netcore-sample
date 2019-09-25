@@ -1,31 +1,26 @@
 {
-  "Serilog": {
-    "Using": [
-      "Serilog.Sinks.ApplicationInsights",
-      "Serilog.Sinks.RollingFile",
-      "Serilog.Sinks.Console"
-    ],
-    "MinimumLevel": {
-      "Default": "Debug",
-      "Override": {
-        "Microsoft": "Warning",
-        "System": "Warning"
-      }
-    },
-    "WriteTo": [
-      {
-        "Name": "Console"
-      },
-      {
-        "Name": "File",
-        "Args": { "path": "C:\\Temp\\TTMS\\Logs\\ttms.srv-{Date}.log" }
-      },
-      {
-        "Name": "ApplicationInsights",
-        "Args": {
-          "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
-        }
-      }
-    ]
-  }
+    "Serilog": {
+
+        "Using": [ "Serilog.Sinks.ApplicationInsights" ],
+
+        "MinimumLevel": {
+            "Default": "Debug"
+        },
+
+        "WriteTo": [
+            {
+                "Name": "ApplicationInsights",
+                "Args": {
+                    "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights"
+                }
+            },
+            {
+                "Name": "File",
+                "Args": {
+                    "path": "C:\\Temp\\TTMS\\Logs\\ttms.srv.log",
+                    "rollOnFileSizeLimit": true
+                }
+            }
+        ]
+    }
 }
