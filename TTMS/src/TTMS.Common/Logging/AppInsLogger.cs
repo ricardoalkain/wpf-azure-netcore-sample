@@ -50,7 +50,7 @@ namespace TTMS.Common.Logging
 
             if (!string.IsNullOrEmpty(logFileName))
             {
-                loggerConfiguration.WriteTo.RollingFile(logFileName);
+                loggerConfiguration.WriteTo.File(logFileName, rollOnFileSizeLimit: true);
             }
 
             Serilog.Log.Logger = loggerConfiguration.CreateLogger();
