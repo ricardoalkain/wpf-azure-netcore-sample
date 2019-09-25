@@ -44,7 +44,7 @@ namespace TTMS.Web.Client
         {
             return await retryPolicy.ExecuteAsync(async () =>
             {
-                var response = await httpclient.GetAsync($"{defaultEndPoint}?type={travelerType}&loadPictures=true").ConfigureAwait(false);
+                var response = await httpclient.GetAsync($"{defaultEndPoint}/type/{travelerType}?loadPictures=true").ConfigureAwait(false);
                 return await response.ReadAsync<IEnumerable<Traveler>>().ConfigureAwait(false);
             });
         }
