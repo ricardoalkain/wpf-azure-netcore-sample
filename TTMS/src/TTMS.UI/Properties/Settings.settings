@@ -2,12 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TTMS.UI.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ApiUrl" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://localhost:44347</Value>
-    </Setting>
-    <Setting Name="LogFile" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Temp\TTMS\Logs\ttms.ui-{Date}.log</Value>
-    </Setting>
     <Setting Name="LogLevel" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Debug</Value>
     </Setting>
@@ -17,8 +11,14 @@
     <Setting Name="OutgoingMessageQueue" Type="System.String" Scope="Application">
       <Value Profile="(Default)">ttms_write</Value>
     </Setting>
+    <Setting Name="ApiUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:7071</Value>
+    </Setting>
+    <Setting Name="LogFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Temp\TTMS\Logs\ttms.ui.log</Value>
+    </Setting>
     <Setting Name="InstrumentationKey" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">e4cc6231-e52e-45ac-b739-fc2f0b74cabf</Value>
+      <Value Profile="(Default)">c182ac3d-80ad-4d89-a41b-72cdc2e15813</Value>
     </Setting>
   </Settings>
 </SettingsFile>

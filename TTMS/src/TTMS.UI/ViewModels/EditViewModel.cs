@@ -1,29 +1,39 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using Microsoft.Win32;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
 using TTMS.UI.Helpers;
+using TTMS.UI.Services;
+using Unity;
 
 namespace TTMS.UI.ViewModels
 {
-    public class EditViewModel : BaseViewModel
+    public class EditViewModel : BaseViewModel, IDataErrorInfo
     {
-        private bool isEditing;
-        private Traveler undoTraveler = null;
+        private readonly IMessageBoxService messageBox;
 
-        public event Action OnSave = delegate { };
-        public event Action OnCancel = delegate { };
+        private bool isEditing = false;
+        private bool isValidating = false;
+        private Traveler undoTraveler = null;
 
         public EditViewModel()
         {
+            messageBox = DependencyManager.Container.Resolve<IMessageBoxService>();
+
             CancelCommand = new RelayCommand(Cancel);
             SaveCommand = new RelayCommand(SaveData);
             LoadPictureCommand = new RelayCommand(LoadPictureFromFile);
         }
 
+        public event Action OnSave = delegate { };
+
+        public event Action OnCancel = delegate { };
+
         public RelayCommand SaveCommand { get; private set; }
+
 
         public RelayCommand CancelCommand { get; private set; }
 
@@ -80,8 +90,8 @@ namespace TTMS.UI.ViewModels
             set => SetProperty(ref birthdate, value);
         }
 
-        private int birthtimelineid;
-        public int BirthTimelineId
+        private int? birthtimelineid;
+        public int? BirthTimelineId
         {
             get => birthtimelineid;
             set => SetProperty(ref birthtimelineid, value);
@@ -94,15 +104,15 @@ namespace TTMS.UI.ViewModels
             set => SetProperty(ref birthlocation, value);
         }
 
-        private DateTime lastdatetime;
-        public DateTime LastDateTime
+        private DateTime? lastdatetime;
+        public DateTime? LastDateTime
         {
             get => lastdatetime;
             set => SetProperty(ref lastdatetime, value);
         }
 
-        private int lasttimelineid;
-        public int LastTimelineId
+        private int? lasttimelineid;
+        public int? LastTimelineId
         {
             get => lasttimelineid;
             set => SetProperty(ref lasttimelineid, value);
@@ -137,6 +147,96 @@ namespace TTMS.UI.ViewModels
         }
 
         #endregion
+
+        public string Error => null;
+
+        public bool HasErrors
+        {
+            get
+            {
+                foreach (var prop in GetType().GetProperties())
+                {
+                    if (!string.IsNullOrEmpty(this[prop.Name]))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public string this[string fieldName]
+        {
+            get
+            {
+                if (!isValidating)
+                {
+                    return null;
+                }
+
+                switch (fieldName)
+                {
+                    case nameof(Name):
+                        if (string.IsNullOrEmpty(Name))
+                        {
+                            return "This field is required!";
+                        }
+                        break;
+
+                    case nameof(Type):
+                        if (Type == TravelerType.None)
+                        {
+                            return "Traveler's type of traveler is required!";
+                        }
+                        break;
+
+                    case nameof(Status):
+                        if (Status == TravelerStatus.None)
+                        {
+                            return "Traveler's status is required!";
+                        }
+                        break;
+
+                    case nameof(BirthDate):
+                        if (!BirthDate.HasValue)
+                        {
+                            return "Please inform traveler's birth date. If this information is unknown, input the first day of the presumed birth year.";
+                        }
+                        break;
+
+                    case nameof(BirthTimelineId):
+                        if (!BirthTimelineId.HasValue)
+                        {
+                            return "Please inform traveler's original timeline.";
+                        }
+                        break;
+
+                    case nameof(LastTimelineId):
+                        if (!LastTimelineId.HasValue)
+                        {
+                            LastTimelineId = 935;
+                        }
+                        break;
+
+                    case nameof(LastDateTime):
+                        if (!LastDateTime.HasValue)
+                        {
+                            LastDateTime = DateTime.Now;
+                        }
+                        break;
+
+                    case nameof(LastLocation):
+                        if (string.IsNullOrEmpty(LastLocation))
+                        {
+                            LastLocation = "London, UK (presumed)";
+                        }
+                        break;
+                }
+
+                return null;
+            }
+        }
 
         public void NewTraverler()
         {
@@ -216,10 +316,10 @@ namespace TTMS.UI.ViewModels
             traveler.Skills = this.Skills;
             traveler.Picture = this.Picture;
             traveler.BirthDate = this.BirthDate.GetValueOrDefault();
-            traveler.BirthTimelineId = this.BirthTimelineId;
+            traveler.BirthTimelineId = this.BirthTimelineId.GetValueOrDefault();
             traveler.BirthLocation = this.BirthLocation;
-            traveler.LastDateTime = this.LastDateTime;
-            traveler.LastTimelineId = this.LastTimelineId;
+            traveler.LastDateTime = this.LastDateTime.GetValueOrDefault(DateTime.Now);
+            traveler.LastTimelineId = this.LastTimelineId.GetValueOrDefault();
             traveler.LastLocation = this.LastLocation;
             traveler.Type = this.Type;
             traveler.Status = this.Status;
@@ -228,6 +328,27 @@ namespace TTMS.UI.ViewModels
 
         private void SaveData()
         {
+            isValidating = true;
+            RaisePropertyChanged(null);
+
+            if (HasErrors)
+            {
+                return;
+            }
+
+            if (Picture == null || Picture.Length == 0)
+            {
+                if (!messageBox.Confirm("Are you sure you want to create a traveler profile without a picture?\n\n" +
+                    "Our agents will certainly thank you for a clear way to identify this traveler in the adevent of " +
+                    "any future time crime investigation."))
+                {
+                    return;
+                }
+            }
+
+            isValidating = false;
+            RaisePropertyChanged(null);
+
             IsEditing = false;
             OnSave();
         }
@@ -256,7 +377,7 @@ namespace TTMS.UI.ViewModels
 
         private void ClearForm()
         {
-            this.Id = Guid.NewGuid();
+            this.Id = default;
             this.Name = default;
             this.Alias = default;
             this.Skills = default;
@@ -264,12 +385,12 @@ namespace TTMS.UI.ViewModels
             this.BirthDate = default;
             this.BirthTimelineId = default;
             this.BirthLocation = default;
-            this.LastDateTime = DateTime.Now;
-            this.LastTimelineId = 1;
+            this.LastDateTime = default;
+            this.LastTimelineId = default;
             this.LastLocation = default;
             this.Type = default;
             this.Status = TravelerStatus.Active;
-            this.DeviceModel = DeviceModel.Unknown;
+            this.DeviceModel = DeviceModel.None;
         }
     }
 }

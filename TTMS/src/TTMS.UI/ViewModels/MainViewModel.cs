@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Serilog;
 using TTMS.Common.Enums;
 using TTMS.Common.Models;
@@ -138,8 +139,8 @@ namespace TTMS.UI.ViewModels
                 traveler = list.FirstOrDefault();
             }
 
-            SelectedTraveler = traveler;
             TravelersList = list;
+            SelectedTraveler = traveler;
             IsListLoading = false;
         }
 
@@ -148,9 +149,22 @@ namespace TTMS.UI.ViewModels
             Log.Logger.Information("Loading Traveler Details: ID {id}", id);
 
             IsViewLoading = true;
-            var traveler = await travelerService.GetByIdAsync(id);
-            editView.ShowTraveler(traveler);
-            IsViewLoading = false;
+
+            try
+            {
+                var traveler = await travelerService.GetByIdAsync(id);
+                editView.ShowTraveler(traveler);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, "Fail to load traveler {id}", id);
+                selectedTraveler = null;
+                RefreshData();
+            }
+            finally
+            {
+                IsViewLoading = false;
+            }
         }
 
         private void EditTraveler()
@@ -176,14 +190,19 @@ namespace TTMS.UI.ViewModels
             Log.Logger.Debug("Deleting traveler...");
             try
             {
+                IsEnabled = false;
                 IsListLoading = true;
+                IsViewLoading = true;
 
                 await travelerService.DeleteAsync(SelectedTraveler.Id).ConfigureAwait(false);
+                Thread.Sleep(1000);
                 RefreshData();
             }
             finally
             {
+                IsEnabled = true;
                 IsListLoading = false;
+                IsViewLoading = false;
             }
         }
 
@@ -193,17 +212,27 @@ namespace TTMS.UI.ViewModels
 
             try
             {
+                IsEnabled = false;
                 IsViewLoading = true;
                 var traveler = editView.GetTraveler();
 
                 if (traveler.Id == default)
                 {
-                    await travelerService.CreateAsync(traveler).ConfigureAwait(false);
+                    // UI creates a key to be able to properly show the new record. It's a simple way to "hide"
+                    // temporary inconsistence while message is still to be processed.
+                    traveler.Id = Guid.NewGuid();
+                    traveler = await travelerService.CreateAsync(traveler).ConfigureAwait(false);
+                    if (FilterByType != traveler.Type)
+                    {
+                        FilterByType = TravelerType.None;
+                    }
                 }
                 else
                 {
                     await travelerService.UpdateAsync(traveler).ConfigureAwait(false);
                 }
+
+                Thread.Sleep(1000);
 
                 RefreshData(traveler.Id);
             }

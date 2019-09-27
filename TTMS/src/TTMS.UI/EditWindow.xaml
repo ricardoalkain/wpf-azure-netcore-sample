@@ -22,12 +22,25 @@
                     <Setter Property="Height" Value="21"/>
                     <Setter Property="VerticalAlignment" Value="Top"/>
                     <Setter Property="Margin" Value="8,0,0,8"/>
-                    <!--<Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="Black"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <!--<Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}" />-->
+                            <Setter Property="Validation.ErrorTemplate">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <AdornedElementPlaceholder/>
+                                            <Border Margin="20,16,0,0" Padding="4,2" Background="LightGray" CornerRadius="3" BorderThickness="1" BorderBrush="Gray">
+                                                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10"/>
+                                            </Border>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
-                    </Style.Triggers>-->
+                    </Style.Triggers>
                 </Style>
+
                 <Style TargetType="TextBox" BasedOn="{StaticResource DataField}">
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                     <Style.Triggers>
@@ -44,6 +57,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
+
                 <Style TargetType="ComboBox" BasedOn="{StaticResource DataField}">
                     <Setter Property="HorizontalAlignment" Value="Left" />
                     <Style.Triggers>
@@ -60,6 +74,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
+
                 <Style TargetType="ex:DateTimePicker" BasedOn="{StaticResource DataField}">
                     <Setter Property="HorizontalAlignment" Value="Left" />
                     <Style.Triggers>
@@ -76,6 +91,7 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
+
                 <Style TargetType="Label">
                     <Setter Property="FontSize" Value="10"/>
                     <Setter Property="Foreground" Value="Gray"/>
@@ -96,7 +112,7 @@
 
 
         <DockPanel Margin="8,0,8,0">
-            <Button x:Name="btPicture" Cursor="Hand" ToolTip="Click to change current picture" Command="{Binding LoadPictureCommand}">
+            <Button x:Name="btPicture" Cursor="Hand" ToolTip="Click to change current picture" Command="{Binding LoadPictureCommand, ValidatesOnDataErrors=True}">
                 <Button.Template>
                     <ControlTemplate>
                         <StackPanel Width="96" Height="88" Background="LightGray" Margin="8,0,0,4" >
@@ -133,7 +149,7 @@
 
                 <Label Content="_Name"/>
                 <TextBox x:Name="txName" Grid.Row="1" Grid.ColumnSpan="3"
-                         Text="{Binding Path=Name}"/>
+                         Text="{Binding Path=Name, ValidatesOnDataErrors=True}"/>
 
                 <Label Content="_Alias" Grid.Column="0" Grid.Row="2"/>
                 <TextBox x:Name="txAlias" Width="75" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left"
@@ -144,14 +160,14 @@
                           ItemsSource="{Binding Path=Type, Converter={h:EnumToListConverter}, Mode=OneTime}"
                           SelectedValuePath="Value"
                           DisplayMemberPath="Description"
-                          SelectedValue="{Binding Path=Type}"/>
+                          SelectedValue="{Binding Path=Type, ValidatesOnDataErrors=True}"/>
 
                 <Label Content="_Status" Grid.Column="2" Grid.Row="2"/>
                 <ComboBox x:Name="cbTravelerStatus" Width="75" Grid.Column="2" Grid.Row="3"
                         ItemsSource="{Binding Path=Status, Converter={h:EnumToListConverter}, Mode=OneTime}"
                         SelectedValuePath="Value"
                         DisplayMemberPath="Description"
-                        SelectedValue="{Binding Path=Status}"/>
+                        SelectedValue="{Binding Path=Status, ValidatesOnDataErrors=True}"/>
             </Grid>
         </DockPanel>
 
@@ -169,15 +185,15 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="_Born In" Grid.Column="0" Grid.Row="0"/>
-                <ex:DateTimePicker x:Name="txBirthDate" Grid.Row="1" Grid.Column="0" Value="{Binding BirthDate}"
+                <ex:DateTimePicker x:Name="txBirthDate" Grid.Row="1" Grid.Column="0" Value="{Binding BirthDate, ValidatesOnDataErrors=True}"
                                      HorizontalAlignment="Left" TimePickerVisibility="Hidden"
                                     Format="Custom" FormatString="dd/MM/yyyy" TimePickerShowButtonSpinner="False" ShowButtonSpinner="False" CultureInfo="en-GB"/>
 
                 <Label Content="_Timeline" Grid.Row="0" Grid.Column="1"/>
-                <TextBox x:Name="txBirthTimeline" Grid.Row="1" Grid.Column="1" Width="50" Text="{Binding Path=BirthTimelineId}"/>
+                <TextBox x:Name="txBirthTimeline" Grid.Row="1" Grid.Column="1" Width="50" Text="{Binding Path=BirthTimelineId, ValidatesOnDataErrors=True}"/>
 
                 <Label Content="_Location" Grid.Row="0" Grid.Column="2"/>
-                <TextBox x:Name="txBirthPlace" Grid.Row="1" Grid.Column="2" Text="{Binding Path=BirthLocation}"/>
+                <TextBox x:Name="txBirthPlace" Grid.Row="1" Grid.Column="2" Text="{Binding Path=BirthLocation, ValidatesOnDataErrors=True}"/>
             </Grid>
 
             <Grid>
@@ -195,7 +211,7 @@
                         ItemsSource="{Binding Path=DeviceModel, Converter={h:EnumToListConverter}, Mode=OneTime}"
                         SelectedValuePath="Value"
                         DisplayMemberPath="Description"
-                        SelectedValue="{Binding Path=DeviceModel}"/>
+                        SelectedValue="{Binding Path=DeviceModel, ValidatesOnDataErrors=True}"/>
             </Grid>
 
             <Grid>
@@ -210,19 +226,19 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="_Last Report" Grid.Column="0" Grid.Row="0"/>
-                <ex:DateTimePicker x:Name="txLastDate" Grid.Row="1" Grid.Column="0" Value="{Binding Path=LastDateTime}"
+                <ex:DateTimePicker x:Name="txLastDate" Grid.Row="1" Grid.Column="0" Value="{Binding Path=LastDateTime, ValidatesOnDataErrors=True}"
                                     HorizontalAlignment="Left"
                                     Format="Custom" FormatString="dd/MM/yyyy HH:mm" TimePickerShowButtonSpinner="False" ShowButtonSpinner="False" CultureInfo="en-GB"/>
 
                 <Label Content="_Timeline" Grid.Row="0" Grid.Column="1"/>
-                <TextBox x:Name="txLastTimeline" Grid.Row="1" Grid.Column="1" Width="50" Text="{Binding Path=LastTimelineId}"/>
+                <TextBox x:Name="txLastTimeline" Grid.Row="1" Grid.Column="1" Width="50" Text="{Binding Path=LastTimelineId, ValidatesOnDataErrors=True}"/>
 
                 <Label Content="_Location" Grid.Row="0" Grid.Column="2"/>
-                <TextBox x:Name="txLastPlace" Grid.Row="1" Grid.Column="2" Text="{Binding Path=LastLocation}"/>
+                <TextBox x:Name="txLastPlace" Grid.Row="1" Grid.Column="2" Text="{Binding Path=LastLocation, ValidatesOnDataErrors=True}"/>
             </Grid>
 
             <Label Content="Skills &amp; _Notes" Grid.Row="5"/>
-            <TextBox x:Name="txSkills" Grid.Column="1" Grid.Row="5" Text="{Binding Path=Skills}"
+            <TextBox x:Name="txSkills" Grid.Column="1" Grid.Row="5" Text="{Binding Path=Skills, ValidatesOnDataErrors=True}"
                         AcceptsReturn="True"
                         TextWrapping="Wrap"
                         ScrollViewer.VerticalScrollBarVisibility="Visible"
