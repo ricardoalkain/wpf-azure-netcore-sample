@@ -13,38 +13,51 @@ namespace TTMS.Azure.Functions
     {
         #region Table Writer helper functions
 
-        public static async Task<Traveler> CreateTravelerAsync(CloudTable table, Traveler traveler)
+        private static readonly string UndefinedRowKey = default(Guid).ToString();
+
+        public static async Task<TableResult> CreateTravelerAsync(CloudTable table, Traveler traveler, ILogger logger)
         {
-            if (string.IsNullOrEmpty(traveler.RowKey))
+            if (string.IsNullOrEmpty(traveler.RowKey) || traveler.RowKey.CompareTo(UndefinedRowKey) == 0)
             {
                 traveler.RowKey = Guid.NewGuid().ToString();
+                logger.LogInformation("New traveler key: {RowKey}", traveler.RowKey);
             }
 
             var operation = TableOperation.Insert(traveler);
-            await table.ExecuteAsync(operation);
+            var result = await table.ExecuteAsync(operation);
 
-            return traveler;
+            if (result.HttpStatusCode == (int)HttpStatusCode.Created)
+            {
+                logger.LogDebug("New traveler created: {@traveler}", traveler);
+            }
+            else
+            {
+                logger.LogError("Database operation failed [HTTP {HttpStatusCode}]", result.HttpStatusCode);
+            }
+
+            return result;
         }
 
-        public static async Task<TableResult> UpdateTravelerAsync(CloudTable table, Traveler traveler)
+        public static async Task<TableResult> UpdateTravelerAsync(CloudTable table, Traveler traveler, ILogger logger)
         {
             traveler.ETag = "*";
             var operation = TableOperation.Replace(traveler);
             return await table.ExecuteAsync(operation);
         }
 
-        public static async Task<TableResult> DeleteTravelerAsync(CloudTable table, Guid id)
+        public static async Task<TableResult> DeleteTravelerAsync(CloudTable table, string rowKey, ILogger logger)
         {
             var query = new TableQuery<Traveler>()
                             .Where(TableQuery.GenerateFilterCondition(
                                     nameof(Traveler.RowKey),
                                     QueryComparisons.Equal,
-                                    id.ToString()));
+                                    rowKey));
 
             var entityToDelete = (await table.ExecuteQueryAsync(query))?.FirstOrDefault();
 
             if (entityToDelete == null)
             {
+                logger.LogInformation("Traveler {RowKey} not found in the database", entityToDelete.RowKey);
                 return new TableResult { HttpStatusCode = (int)HttpStatusCode.NotFound };
             }
 

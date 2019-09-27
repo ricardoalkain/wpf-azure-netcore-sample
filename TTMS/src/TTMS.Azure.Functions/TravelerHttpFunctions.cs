@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -113,18 +114,18 @@ namespace TTMS.Azure.Functions
 
                 var traveler = await req.DeserializeAsync<TravelerRequest>();
 
-                if (traveler.Id == default)
-                {
-                    traveler.Id = Guid.NewGuid();
-                }
-
                 var entity = traveler.ToEntity();
-                var operation = TableOperation.Insert(entity);
-                var results = await table.ExecuteAsync(operation);
 
-                logger.LogDebug("New traveler created: {@traveler}", traveler);
+                var result = await TableStorageHelper.CreateTravelerAsync(table, entity, logger);
 
-                return new CreatedAtRouteResult(new { id = entity.RowKey }, entity.CreateResponse());
+                if (result.HttpStatusCode == (int)HttpStatusCode.Created)
+                {
+                    return new CreatedAtRouteResult(new { id = entity.RowKey }, entity.CreateResponse());
+                }
+                else
+                {
+                    return new StatusCodeResult(result.HttpStatusCode);
+                }
             }
             catch (ArgumentException ex)
             {
@@ -153,12 +154,11 @@ namespace TTMS.Azure.Functions
 
                 if (id != entity.RowKey)
                 {
-                    throw new ArgumentException("It's not allowed to change entity ID");
+                    logger.LogError("It's not allowed to change entity ID");
+                    return new BadRequestResult();
                 }
 
-                entity.ETag = "*";
-                var operation = TableOperation.Replace(entity);
-                var result = await table.ExecuteAsync(operation);
+                var result = await TableStorageHelper.UpdateTravelerAsync(table, entity, logger);
 
                 return new StatusCodeResult(result.HttpStatusCode);
             }
@@ -195,14 +195,13 @@ namespace TTMS.Azure.Functions
 
                 if (entityToDelete == null)
                 {
-                    logger.LogWarning("No traveler found with ID {id}", id);
+                    logger.LogWarning("HTTP 404: No traveler found with ID {id}", id);
                     return new NotFoundResult();
                 }
 
-                var operation = TableOperation.Delete(entityToDelete);
-                var result = await table.ExecuteAsync(operation);
+                var result = await TableStorageHelper.DeleteTravelerAsync(table, id, logger);
 
-                logger.LogDebug("Traveler delete result: {statusCode}", result.HttpStatusCode);
+                logger.LogDebug("Traveler delete result: HTTP {HttpStatusCode}", result.HttpStatusCode);
                 return new StatusCodeResult(result.HttpStatusCode);
             }
             catch (ArgumentException ex)

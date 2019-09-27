@@ -1,8 +1,10 @@
 {
   "IsEncrypted": false,
-  "Values": {
-    "ServiceBusConnection": "Endpoint=sb://ric-startertask.servicebus.windows.net/;SharedAccessKeyName=AppSharedAccessKey;SharedAccessKey=0VMr8AjKo1rFllp7/Zn9MEDU1F2ibUJ0c7hP0QNQh88=",
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=radevstartertask;AccountKey=XM3MOxPEXysfT7+X3azKNW9MkAYvrZMh1A/ND1bC9A2gpYZvpY4zFdPZxKuADFF1y3qkEn6XuLf4exV6iQ1U8w==;BlobEndpoint=https://radevstartertask.blob.core.windows.net/;TableEndpoint=https://radevstartertask.table.core.windows.net/;QueueEndpoint=https://radevstartertask.queue.core.windows.net/;FileEndpoint=https://radevstartertask.file.core.windows.net/",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
-  }
+    "Values": {
+        "ServiceBusConnection": "Endpoint=sb://ric-startertask.servicebus.windows.net/;SharedAccessKeyName=AppSharedAccessKey;SharedAccessKey=0VMr8AjKo1rFllp7/Zn9MEDU1F2ibUJ0c7hP0QNQh88=",
+        "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=radevstartertask;AccountKey=XM3MOxPEXysfT7+X3azKNW9MkAYvrZMh1A/ND1bC9A2gpYZvpY4zFdPZxKuADFF1y3qkEn6XuLf4exV6iQ1U8w==;BlobEndpoint=https://radevstartertask.blob.core.windows.net/;TableEndpoint=https://radevstartertask.table.core.windows.net/;QueueEndpoint=https://radevstartertask.queue.core.windows.net/;FileEndpoint=https://radevstartertask.file.core.windows.net/",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    },
+
+    "ApiUrl": "http://localhost:7071"
 }
