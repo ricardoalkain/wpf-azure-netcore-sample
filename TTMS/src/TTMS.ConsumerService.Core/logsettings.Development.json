@@ -20,6 +20,9 @@
                     "path": "C:\\Temp\\TTMS\\Logs\\ttms.srv.log",
                     "rollOnFileSizeLimit": true
                 }
+            },
+            {
+                "Name": "Console"
             }
         ]
     }

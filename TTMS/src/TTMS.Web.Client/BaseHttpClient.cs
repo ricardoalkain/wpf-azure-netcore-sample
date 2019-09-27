@@ -36,10 +36,10 @@ namespace TTMS.Web.Client
 
             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(
                 retryCount: 3,
-                sleepDurationProvider: attempt => TimeSpan.FromSeconds(10),
+                sleepDurationProvider: attempt => TimeSpan.FromSeconds(3),
                 onRetry: (exception, duration) =>
                 {
-                    logger.LogError(exception, "{Message}", exception.Message);
+                    logger.LogError(exception, "{ClientClass} request failed: {Message}", this.GetType().Name, exception.Message);
                 });
         }
     }

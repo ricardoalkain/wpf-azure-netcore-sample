@@ -52,14 +52,18 @@ namespace TTMS.Messaging.Consumers
 
         private async Task ProcessMessagesAsync(Microsoft.Azure.ServiceBus.Message message, CancellationToken token)
         {
-            logger.LogInformation("Message received: {info}", message.MessageId);
+            logger.LogInformation("Message received [ID {messageId}]", message.MessageId);
 
             string stringMessage = Encoding.UTF8.GetString(message.Body);
-            await ProcessMessageAsync(stringMessage);
 
             if (!token.IsCancellationRequested)
             {
+                logger.LogInformation("Processing message [ID {messageId}]...", message.MessageId);
+                await ProcessMessageAsync(stringMessage);
+                logger.LogInformation("Message successfully processed [ID {messageId}]", message.MessageId);
+
                 await queueClient.CompleteAsync(message.SystemProperties.LockToken);
+                logger.LogInformation("Message committed [ID {messageId}]", message.MessageId);
             }
         }
 
