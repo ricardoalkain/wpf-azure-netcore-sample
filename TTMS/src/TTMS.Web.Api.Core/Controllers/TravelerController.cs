@@ -77,7 +77,12 @@ namespace TTMS.Web.Api.Controllers
             var newTraveler = await service.CreateAsync(traveler.ToModel()).ConfigureAwait(false);
             var response = newTraveler.CreateResponse();
 
-            return Created(Url.Link("DefaultApi", new { controller = "Traveler", id = response.Id }), response);
+            //var url = Url.RouteUrl("GetTravelerById", new { id = newTraveler.Id });
+            var url = Url.Action(nameof(GetById), nameof(TravelerController).Replace("Controller", ""),
+                new { id = newTraveler.Id }, Request.Scheme);
+            return Created(url, response);
+
+            //return Created(Url.Link("default", new { controller = "Traveler", id = response.Id }), response);
         }
 
         /// <summary>

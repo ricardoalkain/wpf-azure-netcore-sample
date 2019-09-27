@@ -60,7 +60,7 @@ namespace TTMS.Web.Api.Core
                 c.SwaggerEndpoint("/swagger/beta/swagger.json", "");
             });
 
-            //app.UseSerilogRequestLogging(); // Better logging than ASP.NET Core
+            app.UseSerilogRequestLogging(); // Better logging than ASP.NET Core
 
             app.UseMvc();
         }
