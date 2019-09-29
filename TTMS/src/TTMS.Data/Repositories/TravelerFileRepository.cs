@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -11,16 +12,21 @@ namespace TTMS.Data.Repositories
 {
     public class TravelerFileRepository : ITravelerRepository
     {
+        private readonly IFileSystem fileSystem;
         private readonly ILogger logger;
         private readonly string fileName;
 
-        public TravelerFileRepository(ILogger logger, string dataSource)
+        public TravelerFileRepository(
+            ILogger logger,
+            IFileSystem fileSystem,
+            string dataSource)
         {
             if (string.IsNullOrWhiteSpace(dataSource))
             {
                 throw new ArgumentException("No data file location provided", nameof(dataSource));
             }
 
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             fileName = dataSource;
         }
@@ -81,7 +87,7 @@ namespace TTMS.Data.Repositories
         private void SaveToFile(List<Traveler> travelers)
         {
             logger.LogInformation("Saving file: {File}", fileName);
-            File.WriteAllText(fileName, JsonConvert.SerializeObject(travelers));
+            fileSystem.File.WriteAllText(fileName, JsonConvert.SerializeObject(travelers));
             logger.LogInformation("File saved");
         }
 
@@ -89,12 +95,12 @@ namespace TTMS.Data.Repositories
         {
             logger.LogInformation("Loading file: {File}", fileName);
 
-            if (!File.Exists(fileName))
+            if (!fileSystem.File.Exists(fileName))
             {
                 throw new FileNotFoundException($"File '{fileName}' not found or moved since last access.", fileName);
             }
 
-            using (var file = File.OpenText(fileName))
+            using (var file = fileSystem.File.OpenText(fileName))
             {
                 var fileContent = await file.ReadToEndAsync().ConfigureAwait(false);
                 var list = JsonConvert.DeserializeObject<List<Traveler>>(fileContent);

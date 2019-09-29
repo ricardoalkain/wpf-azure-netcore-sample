@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Abstractions;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
@@ -19,7 +20,8 @@ namespace TTMS.UI.Helpers
             RegisterLogger();
 
             Container
-                .RegisterSingleton<ITravelerRepository, TravelerFileRepository>(new InjectionConstructor(typeof(Microsoft.Extensions.Logging.ILogger), Settings.Default.DataSource))
+                .RegisterSingleton<ITravelerRepository, TravelerFileRepository>(
+                    new InjectionConstructor(typeof(Microsoft.Extensions.Logging.ILogger), new FileSystem(), Settings.Default.DataSource))
                 .RegisterSingleton<ITravelerService, TravelerService>();
         }
 
