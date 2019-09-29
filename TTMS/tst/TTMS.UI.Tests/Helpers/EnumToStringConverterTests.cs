@@ -1,15 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TTMS.UI.Helpers;
+using System.Globalization;
 using AutoFixture;
 using Moq;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Linq;
+using NUnit.Framework;
+using TTMS.UI.Helpers;
 
 namespace TTMS.UI.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class EnumToStringConverterTests
     {
         private enum TestEnum
@@ -24,14 +22,14 @@ namespace TTMS.UI.Tests
         private Fixture fixture;
         private EnumToStringConverter enumToStringConverter;
 
-        [TestInitialize]
+        [SetUp]
         public void SetupTest()
         {
             this.fixture = new Fixture();
             this.enumToStringConverter = new EnumToStringConverter();
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_EnumValueWithDescription_ReturnsDescription()
         {
             // Arrange
@@ -42,11 +40,11 @@ namespace TTMS.UI.Tests
             var result = enumToStringConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(string), "String result expected");
-            Assert.AreEqual(expected, result.ToString(), false, $"Test returned '{result}' but '{expected}' was expected");
+            Assert.IsInstanceOf(typeof(string), result, "String result expected");
+            Assert.AreEqual(expected, result.ToString(), $"Test returned '{result}' but '{expected}' was expected");
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_EnumValueWithoutDescription_ReturnsItemName()
         {
             // Arrange
@@ -57,21 +55,19 @@ namespace TTMS.UI.Tests
             var result = enumToStringConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(string), "String result expected");
-            Assert.AreEqual(expected, result.ToString(), false, $"Test returned '{result}' but '{expected}' was expected");
+            Assert.IsInstanceOf(typeof(string), result, "String result expected");
+            Assert.AreEqual(expected, result.ToString(), $"Test returned '{result}' but '{expected}' was expected");
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void Convert_NonEnumValue_ArgumentException()
         {
             // Arrange
             var inputValue = fixture.Create<string>();
 
-            //Act
-            var result = enumToStringConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>());
-
-            //Assert - Exception
+            //Act / Assert
+            Assert.Throws<ArgumentException>(() =>
+                enumToStringConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>()));
         }
     }
 }

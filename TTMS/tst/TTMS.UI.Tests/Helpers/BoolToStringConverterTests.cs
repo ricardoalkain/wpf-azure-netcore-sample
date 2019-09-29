@@ -1,26 +1,27 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TTMS.UI.Helpers;
 using AutoFixture;
 using Moq;
 using System.Globalization;
+using NUnit.Framework;
+using FluentAssertions;
 
 namespace TTMS.UI.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class BoolToStringConverterTests
     {
         private Fixture fixture;
         private BoolToStringConverter boolToStringConverter;
 
-        [TestInitialize]
+        [SetUp]
         public void SetupTest()
         {
             this.fixture = new Fixture();
             this.boolToStringConverter = new BoolToStringConverter();
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_TrueValue_ReturnsFirstString()
         {
             // Arrange
@@ -33,11 +34,11 @@ namespace TTMS.UI.Tests
             var result = boolToStringConverter.Convert(inputValue, It.IsAny<Type>(), stringParam, It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(string), "String result expected");
-            Assert.AreEqual(expected, result.ToString(), false, $"Test returned '{result}' but {expected} was expected");
+            result.Should().BeOfType(typeof(string), "String result expected");
+            expected.Should().Be(result.ToString(), $"Test returned '{result}' but {expected} was expected");
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_FalseValue_ReturnsSecondString()
         {
             // Arrange
@@ -50,11 +51,11 @@ namespace TTMS.UI.Tests
             var result = boolToStringConverter.Convert(inputValue, It.IsAny<Type>(), stringParam, It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(string), "String result expected");
-            Assert.AreEqual(expected, result.ToString(), false, $"Test returned '{result}' but {expected} was expected");
+            result.Should().BeOfType(typeof(string), "String result expected");
+            expected.Should().Be(result.ToString(), $"Test returned '{result}' but {expected} was expected");
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_TrueValueNullString_ReturnsTrueString()
         {
             // Arrange
@@ -65,11 +66,11 @@ namespace TTMS.UI.Tests
             var result = boolToStringConverter.Convert(inputValue, It.IsAny<Type>(), stringParam, It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(string), "String result expected");
-            Assert.AreEqual(bool.TrueString, result.ToString(), false, $"Test returned '{result}' but {bool.TrueString} was expected");
+            Assert.IsInstanceOf(typeof(string), result, "String result expected");
+            Assert.AreEqual(bool.TrueString, result.ToString(), $"Test returned '{result}' but {bool.TrueString} was expected");
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_FalseValueNullString_ReturnsFalseString()
         {
             // Arrange
@@ -80,8 +81,8 @@ namespace TTMS.UI.Tests
             var result = boolToStringConverter.Convert(inputValue, It.IsAny<Type>(), stringParam, It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(string), "String result expected");
-            Assert.AreEqual(bool.FalseString, result.ToString(), false, $"Test returned '{result}' but {bool.FalseString} was expected");
+            Assert.IsInstanceOf(typeof(string), result, "String result expected");
+            Assert.AreEqual(bool.FalseString, result.ToString(), $"Test returned '{result}' but {bool.FalseString} was expected");
         }
     }
 }

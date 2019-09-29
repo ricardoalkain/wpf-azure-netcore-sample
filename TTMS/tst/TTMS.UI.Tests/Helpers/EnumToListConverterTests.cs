@@ -1,15 +1,15 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TTMS.UI.Helpers;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using AutoFixture;
 using Moq;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Linq;
+using NUnit.Framework;
+using TTMS.UI.Helpers;
 
 namespace TTMS.UI.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class EnumToListConverterTests
     {
         private enum TestEnum
@@ -25,7 +25,7 @@ namespace TTMS.UI.Tests
         private Fixture fixture;
         private EnumToListConverter enumToListConverter;
 
-        [TestInitialize]
+        [SetUp]
         public void SetupTest()
         {
             this.fixture = new Fixture();
@@ -39,7 +39,7 @@ namespace TTMS.UI.Tests
             };
         }
 
-        [TestMethod]
+        [Test]
         public void Convert_EnumValue_ReturnsListValueDescription()
         {
             // Arrange
@@ -49,22 +49,21 @@ namespace TTMS.UI.Tests
             var result = enumToListConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>());
 
             //Assert
-            Assert.IsInstanceOfType(result, typeof(IEnumerable<EnumToListConverter.ValueDescription>), "List of value/description expected");
+            Assert.IsInstanceOf(typeof(IEnumerable<EnumToListConverter.ValueDescription>), result, "List of value/description expected");
             var resultList = (result as IEnumerable<EnumToListConverter.ValueDescription>).ToList();
             CollectionAssert.AreEqual(valueDescriptions, resultList, $"Items returned are not the same");
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void Convert_NonEnumValue_ArgumentException()
         {
             // Arrange
             var inputValue = fixture.Create<string>();
 
-            //Act
-            var result = enumToListConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>());
+            //Act / Assert
+            Assert.Throws<ArgumentException>(() =>
+                enumToListConverter.Convert(inputValue, It.IsAny<Type>(), It.IsAny<object>(), It.IsAny<CultureInfo>()));
 
-            //Assert - Exception
         }
     }
 }
