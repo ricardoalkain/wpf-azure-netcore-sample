@@ -23,6 +23,13 @@ namespace TTMS.Web.Api.Core.Services
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
+            if (traveler == null)
+            {
+                var ex = new ArgumentNullException(nameof(traveler), "Enitity can't be null");
+                logger.LogError(ex, ex.Message);
+                throw ex;
+            }
+
             if (traveler.Id == default)
             {
                 traveler.Id = Guid.NewGuid();

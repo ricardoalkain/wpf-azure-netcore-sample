@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 using TTMS.Common.Abstractions;
+using TTMS.Data.Abstractions;
 using TTMS.Data.Azure;
 using TTMS.Web.Api.Core.Services;
 
@@ -29,6 +30,7 @@ namespace TTMS.Web.Api.Core
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddSingleton<IAzureCloudFactory, AzureCloudFactory>();
             services.AddSingleton<ITravelerReader, TravelerTableReader>();
             services.AddSingleton<ITravelerWriter, TravelerTableWriter>();
             services.AddTransient<ITravelerDbService, TravelerDbService>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TTMS.Common.Abstractions;
@@ -14,8 +15,8 @@ namespace TTMS.Messaging.Consumers
 
         public TravelerConsumer(
             ILogger logger,
-            MessagingConfig messagingConfig,
-            ITravelerWriter travelerWriter) : base(logger, messagingConfig)
+            IQueueClient queueClient,
+            ITravelerWriter travelerWriter) : base(logger, queueClient)
         {
             this.writer = travelerWriter ?? throw new ArgumentNullException(nameof(travelerWriter));
         }

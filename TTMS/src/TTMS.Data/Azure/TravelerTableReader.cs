@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using TTMS.Common.Abstractions;
 using TTMS.Common.Entities.Extensions;
 using TTMS.Common.Enums;
+using TTMS.Data.Abstractions;
 using Entities = TTMS.Common.Entities;
 using Models = TTMS.Common.Models;
 
@@ -15,8 +16,11 @@ namespace TTMS.Data.Azure
 {
     public class TravelerTableReader : BaseAzureTableProvider<Guid, Entities.Traveler>, ITravelerReader
     {
-        public TravelerTableReader(ILogger<TravelerTableReader> logger, IConfiguration configuration)
-            : base(logger, nameof(Entities.Traveler), configuration)
+        public TravelerTableReader(
+            ILogger<TravelerTableReader> logger,
+            IConfiguration configuration,
+            IAzureCloudFactory cloudFactory)
+            : base(logger, nameof(Entities.Traveler), configuration, cloudFactory)
         {
         }
 

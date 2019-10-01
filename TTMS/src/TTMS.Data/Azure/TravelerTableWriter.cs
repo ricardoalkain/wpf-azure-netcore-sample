@@ -7,20 +7,36 @@ using Microsoft.WindowsAzure.Storage.Table;
 using TTMS.Common.Abstractions;
 using TTMS.Common.Entities.Extensions;
 using TTMS.Common.Models;
+using TTMS.Data.Abstractions;
 using Entities = TTMS.Common.Entities;
 
 namespace TTMS.Data.Azure
 {
     public class TravelerTableWriter : BaseAzureTableProvider<Guid, Entities.Traveler>, ITravelerWriter
     {
-        public TravelerTableWriter(ILogger<TravelerTableWriter> logger, IConfiguration configuration)
-            : base(logger, nameof(Traveler), configuration)
+        public TravelerTableWriter(
+            ILogger<TravelerTableWriter> logger,
+            IConfiguration configuration,
+            IAzureCloudFactory cloudFactory)
+            : base(logger, nameof(Traveler), configuration, cloudFactory)
         {
         }
 
         public async Task<Traveler> CreateAsync(Traveler traveler)
         {
             logger.LogDebug("{Method} => {@Traveler}", nameof(CreateAsync), traveler);
+
+            if (traveler == null)
+            {
+                var ex = new ArgumentNullException(nameof(traveler), "Entity can't be null");
+                logger.LogError(ex, "{Method} error", nameof(CreateAsync));
+                throw ex;
+            }
+
+            if (traveler.Id == default)
+            {
+                traveler.Id = Guid.NewGuid();
+            }
 
             var entity = traveler.ToEntity();
             var operation = TableOperation.Insert(entity);
@@ -48,6 +64,13 @@ namespace TTMS.Data.Azure
         public async Task UpdateAsync(Traveler traveler)
         {
             logger.LogDebug("{Method} => {@Traveler}", nameof(UpdateAsync), traveler);
+
+            if (traveler == null)
+            {
+                var ex = new ArgumentNullException(nameof(traveler), "Entity can't be null");
+                logger.LogError(ex, "{Method} error", nameof(CreateAsync));
+                throw ex;
+            }
 
             var entity = traveler.ToEntity();
             entity.ETag = "*";

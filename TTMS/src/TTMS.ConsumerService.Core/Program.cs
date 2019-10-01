@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -36,10 +37,13 @@ namespace TTMS.ConsumerService.Core
                                     .AddJsonFile($"appsettings.{env}.json", optional: true)
                                     .Build();
 
+                var serviceBusConnection = configuration["MessagingConfig:ServerConnection"];
+                var incomingQueueName = configuration["MessagingConfig:IncomingQueue"];
+
                 var services = new ServiceCollection();
                 services.AddSingleton<IConfiguration>(configuration);
-                services.AddSingleton(configuration.GetSection("MessagingConfig").Get<MessagingConfig>());
                 services.AddSingleton(new SerilogLoggerProvider(Log.Logger).CreateLogger("TTMS.ConsumerService.Core"));
+                services.AddSingleton<IQueueClient>(new QueueClient(serviceBusConnection, incomingQueueName));
                 services.AddSingleton<ITravelerWriter, TravelerHttpWriter>();
                 services.AddSingleton<IMessageConsumer, TravelerConsumer>();
 

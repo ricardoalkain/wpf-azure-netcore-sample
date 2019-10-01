@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using TTMS.Data.Abstractions;
 
 namespace TTMS.Data.Azure
 {
@@ -13,7 +14,11 @@ namespace TTMS.Data.Azure
         protected readonly ILogger logger;
         protected CloudTable table;
 
-        public BaseAzureTableProvider(ILogger logger, string tableName, IConfiguration configuration)
+        public BaseAzureTableProvider(
+            ILogger logger,
+            string tableName,
+            IConfiguration configuration,
+            IAzureCloudFactory cloudFactory)
         {
             if (string.IsNullOrEmpty(tableName))
             {
@@ -28,10 +33,7 @@ namespace TTMS.Data.Azure
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             logger.LogInformation("Initializing Azure Cloud Table client...");
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(configuration["DbConnectionString"]);
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-            table = tableClient.GetTableReference(tableName);
+            table = cloudFactory.CreateCloudTable(configuration["DbConnectionString"], tableName);
 
             logger.LogInformation("Creating table '{table}' if not exists...", tableName);
             Task.Run(async () => await table.CreateIfNotExistsAsync()).Wait();

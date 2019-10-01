@@ -10,22 +10,17 @@ namespace TTMS.Messaging.Consumers
 {
     public abstract class BaseAzureConsumer : IMessageConsumer
     {
-        protected readonly QueueClient queueClient;
+        protected readonly IQueueClient queueClient;
         protected readonly ILogger logger;
 
         public BaseAzureConsumer(
             ILogger logger,
-            MessagingConfig config)
+            IQueueClient queueClient)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.queueClient = queueClient ?? throw new ArgumentNullException(nameof(queueClient));
 
-            this.logger.LogInformation("Initializing Service Bus client (queue {queue})...", config.IncomingQueue);
-            queueClient = new QueueClient(config.ServerConnection, config.IncomingQueue);
+            this.logger.LogInformation("Initializing Service Bus client (queue {queue})...", queueClient.QueueName);
         }
 
         public void StartListening()

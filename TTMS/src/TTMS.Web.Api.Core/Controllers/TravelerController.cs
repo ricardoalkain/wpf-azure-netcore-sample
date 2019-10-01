@@ -74,15 +74,21 @@ namespace TTMS.Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]TravelerRequest traveler)
         {
+            if (traveler == null)
+            {
+                var msg = "No traveler information provided";
+                logger.LogWarning("BAD REQUEST: {msg} => {@Request}", msg, Request);
+                return BadRequest(msg);
+            }
+
             var newTraveler = await service.CreateAsync(traveler.ToModel()).ConfigureAwait(false);
             var response = newTraveler.CreateResponse();
 
-            //var url = Url.RouteUrl("GetTravelerById", new { id = newTraveler.Id });
             var url = Url.Action(nameof(GetById), nameof(TravelerController).Replace("Controller", ""),
                 new { id = newTraveler.Id }, Request.Scheme);
             return Created(url, response);
 
-            //return Created(Url.Link("default", new { controller = "Traveler", id = response.Id }), response);
+            //return CreatedAtAction(nameof(GetById), new { id = newTraveler.Id }, response);
         }
 
         /// <summary>
@@ -94,6 +100,13 @@ namespace TTMS.Web.Api.Controllers
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> Put(Guid id, [FromBody]TravelerRequest traveler)
         {
+            if (traveler == null)
+            {
+                var msg = "No traveler information provided";
+                logger.LogWarning("BAD REQUEST: {msg} => {@Request}", msg, Request);
+                return BadRequest(msg);
+            }
+
             if (id != traveler.Id)
             {
                 var msg = "It's not allowed to change entity ID.";
